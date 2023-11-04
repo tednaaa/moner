@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = "FastAPI backend"
+authors = ["Andranik <tednaaa@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.104.1"
+uvicorn = {extras = ["standard"], version = "^0.23.2"}
+pydantic = "^2.4.2"
+celery = {extras = ["redis"], version = "^5.3.4"}
+gunicorn = "^21.2.0"
+httpx = "^0.25.0"
+pymongo = "^4.5.0"
+pydantic-settings = "^2.0.3"
+
+
+[tool.poetry.group.dev.dependencies]
+ruff = "*"
+pytest = "^7.4.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

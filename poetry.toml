@@ -1,0 +1,20 @@
+[virtualenvs]
+in-project = true
+path = ".venv"
+
+[tool.ruff]
+select = [
+	"E",   # pycodestyle error
+	"W",   # pycodestyle warning
+	"F",   # pyflakes
+	"A",   # flakes8-builtins
+	"COM", # flakes8-commas
+	"C4",  # flake8-comprehensions
+	"Q",   # flake8-quotes
+	"SIM", # flake8-simplify
+	"PTH", # flake8-use-pathlib
+	"I",   # isort
+	"N",   # pep8 naming
+	"UP",  # pyupgrade  
+	"S",   # bandit
+]
