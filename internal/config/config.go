@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"log"
@@ -8,17 +8,17 @@ import (
 )
 
 type Config struct {
-	port string
+	Port string
 }
 
-func setupConfg() Config {
-	err := godotenv.Load()
+func SetupConfg() Config {
+	err := godotenv.Load(".env")
 
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
 	return Config{
-		port: os.Getenv("PORT"),
+		Port: os.Getenv("PORT"),
 	}
 }

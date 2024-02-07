@@ -32,7 +32,10 @@ jobs:
           ${{ runner.os }}-go-
 
     - name: Build
-      run: go build -v ./...
+      run: make build
+
+    - name: Run Postgres
+      run: make postgres
 
     - name: Test
-      run: go test -v ./...
+      run: make test
