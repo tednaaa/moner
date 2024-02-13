@@ -9,7 +9,7 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: ./packages/web
+    working-directory: ./apps/web
 
 jobs:
   test:
@@ -64,6 +64,6 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
-          working-directory: ./packages/web
+          working-directory: ./apps/web
           install: false
           start: npm run preview
