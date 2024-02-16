@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/tednaaa/moner/internal/config"
-	"github.com/tednaaa/moner/internal/migrations"
-	"github.com/tednaaa/moner/internal/router"
-	"github.com/tednaaa/moner/internal/storage"
 	"github.com/uptrace/bun"
+	"gitlab.com/tednaaa/moner/internal/migrations"
+	"gitlab.com/tednaaa/moner/internal/router"
+	"gitlab.com/tednaaa/moner/internal/storage"
+	"gitlab.com/tednaaa/moner/internal/utils"
 )
 
 func Migrate(database *bun.DB) {
@@ -16,13 +16,17 @@ func Migrate(database *bun.DB) {
 }
 
 func main() {
+	err := utils.LoadConfig(".")
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	database := storage.ConnectAndGetDatabase()
 	migrations.Migrate(database, context.Background())
 
 	defer database.Close()
 
-	config := config.SetupConfg()
 	router := router.SetupRouter()
 
-	router.Run(":" + config.Port)
+	router.Run(":" + utils.Config.Port)
 }

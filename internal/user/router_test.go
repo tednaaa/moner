@@ -3,17 +3,26 @@ package user_test
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	"github.com/tednaaa/moner/internal/router"
-	"github.com/tednaaa/moner/internal/storage"
-	"github.com/tednaaa/moner/internal/user"
+	"gitlab.com/tednaaa/moner/internal/router"
+	"gitlab.com/tednaaa/moner/internal/storage"
+	"gitlab.com/tednaaa/moner/internal/user"
+	"gitlab.com/tednaaa/moner/internal/utils"
 )
 
 func TestGetUserRoute(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	err := utils.LoadConfig("../..")
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	storage.ClearTable("users", (*user.User)(nil))
 	router := router.SetupRouter()
 
