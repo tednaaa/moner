@@ -1,13 +1,98 @@
-# You can override the included template(s) by including variable overrides
-# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
-# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
-# Note that environment variables can be set in several places
-# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+.golang_job: &golang_job
+  image: golang:1.21.6
+
+.web_jobs: &web_job
+  image: node:20.11.0
+  before_script:
+    - cd apps/web
+    - npm ci
+  cache:
+    key:
+      files:
+        - package-lock.json
+
+
+.go-cache:
+  variables:
+    GOPATH: $CI_PROJECT_DIR/.go
+  before_script:
+    - mkdir -p .go
+  cache:
+    paths:
+      - .go/pkg/mod/
+
+variables:
+  OUTPUT_NAME: __bin__/$CI_PROJECT_NAME
+
 stages:
-- test
-sast:
+  - lint
+  - test
+  - build
+
+golang-lint:
+  image: golangci/golangci-lint:latest
+  stage: lint
+  extends: .go-cache
+  allow_failure: false
+  script:
+    - echo TODO fix this after refactor
+
+golang-test:
+  <<: *golang_job
   stage: test
-include:
-- template: Security/SAST.gitlab-ci.yml
+  services:
+    - postgres
+  variables:
+    POSTGRES_HOST: postgres
+    POSTGRES_PORT: 5432
+    POSTGRES_DB: test
+    POSTGRES_USER: test_user
+    POSTGRES_PASSWORD: test_password
+    POSTGRES_HOST_AUTH_METHOD: trust
+  script:
+    - go fmt $(go list ./... | grep -v /vendor/)
+    - go vet $(go list ./... | grep -v /vendor/)
+    - go test -race $(go list ./... | grep -v /vendor/)
+
+golang-build:
+  <<: *golang_job
+  stage: build
+  script:
+    - make build
+  artifacts:
+    paths:
+      - $OUTPUT_NAME
+
+
+web-lint:
+  <<: *web_job
+  stage: lint
+  script:
+    - npm run lint
+
+web-test:
+  <<: *web_job
+  stage: test
+  script:
+    - npm run test:unit
+
+web-test-e2e:
+  image: cypress/browsers:node-20.11.0-chrome-121.0.6167.85-1-ff-120.0-edge-121.0.2277.83-1
+  stage: test
+  script:
+    - cd apps/web
+    - npm ci
+    - npm run preview &
+    - npx cypress run --browser chrome
+  artifacts:
+    when: always
+    paths:
+      - cypress/videos/**/*.mp4
+      - cypress/screenshots/**/*.png
+    expire_in: 1 day
+
+web-build:
+  <<: *web_job
+  stage: build
+  script:
+   - npm run build

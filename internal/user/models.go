@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/tednaaa/moner/internal/storage"
 	"github.com/uptrace/bun"
+	"gitlab.com/tednaaa/moner/internal/storage"
 	"golang.org/x/crypto/bcrypt"
 )
 

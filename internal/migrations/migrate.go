@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/tednaaa/moner/internal/user"
 	"github.com/uptrace/bun"
+	"gitlab.com/tednaaa/moner/internal/user"
 )
 
 func Migrate(database *bun.DB, ctx context.Context) {

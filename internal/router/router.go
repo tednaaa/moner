@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/tednaaa/moner/internal/user"
+	"gitlab.com/tednaaa/moner/internal/user"
 )
 
 func SetupRouter() *gin.Engine {
