@@ -11,7 +11,11 @@ func Router(router *gin.RouterGroup) {
 	router.DELETE("", deleteUserRoute)
 }
 
-func getUserRoute(c *gin.Context)    {}
+func getUserRoute(c *gin.Context) {
+	c.JSON(200, gin.H{
+		"message": "Hello World!",
+	})
+}
 func createUserRoute(c *gin.Context) {}
 func updateUserRoute(c *gin.Context) {}
 func deleteUserRoute(c *gin.Context) {}

@@ -1,19 +1,22 @@
 package main
 
 import (
-	"fmt"
-
-	"gitlab.com/tednaaa/moner/internal/router"
-	"gitlab.com/tednaaa/moner/internal/utils"
+	"github.com/gin-gonic/gin"
+	"gitlab.com/tednaaa/moner/internal/config"
+	"gitlab.com/tednaaa/moner/internal/database"
+	"gitlab.com/tednaaa/moner/internal/user"
 )
 
 func main() {
-	err := utils.LoadConfig(".")
-	if err != nil {
-		fmt.Println(err)
-	}
+	config.Load()
+	database.Setup()
 
-	router := router.SetupRouter()
+	gin.SetMode(config.App.GinMode)
+	router := gin.Default()
 
-	router.Run(":" + utils.Config.Port)
+	api := router.Group("/api")
+
+	user.Router(api.Group("/user"))
+
+	router.Run(":" + config.App.Port)
 }
