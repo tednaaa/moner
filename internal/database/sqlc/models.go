@@ -5,14 +5,14 @@
 package database
 
 import (
-	"database/sql"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type User struct {
-	ID        int64        `json:"id"`
-	Email     string       `json:"email"`
-	Username  string       `json:"username"`
-	Password  string       `json:"password"`
-	CreatedAt sql.NullTime `json:"created_at"`
-	UpdatedAt sql.NullTime `json:"updated_at"`
+	ID        int64            `json:"id"`
+	Email     string           `json:"email"`
+	Username  string           `json:"username"`
+	Password  string           `json:"password"`
+	CreatedAt pgtype.Timestamp `json:"created_at"`
+	UpdatedAt pgtype.Timestamp `json:"updated_at"`
 }
