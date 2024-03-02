@@ -11,6 +11,7 @@ import { routes } from '@/shared/routes';
 import BaseInput from '@/shared/ui/base-input/base-input.vue';
 import BasePassword from '@/shared/ui/base-password/base-password.vue';
 import BaseLink from '@/shared/ui/base-link/base-link.vue';
+import { useUserStore } from '@/modules/auth/auth.store'
 
 import googleIcon from '@/shared/icons/google-icon.vue'
 import gitlabIcon from '@/shared/icons/gitlab-icon.vue'
@@ -36,8 +37,9 @@ const { handleSubmit } = useForm({
   ),
 });
 
-const onSubmit = handleSubmit(values => {
-  console.log(values)
+const user = useUserStore()
+const onSubmit = handleSubmit(({ email, username, password }) => {
+  user.create(email, username, password)
 });
 </script>
 

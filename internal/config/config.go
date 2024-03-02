@@ -16,8 +16,9 @@ type Database struct {
 }
 
 type Config struct {
-	Port    string `env:"PORT" env-required:"true"`
-	GinMode string `env:"GIN_MODE" env-required:"true"`
+	Port       string `env:"PORT" env-required:"true"`
+	GinMode    string `env:"GIN_MODE" env-required:"true"`
+	Jwt_Secret string `env:"JWT_SECRET" env-required:"true"`
 	Database
 }
 

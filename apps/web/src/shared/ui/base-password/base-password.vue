@@ -20,7 +20,8 @@ function toggleMask() {
 <template>
   <BaseInput :name="props.name" :label="props.label" :type="show ? 'text' : 'password'">
     <template #right>
-      <button :class="[$style.eyeButton, show || $style.eyeButtonHidden]" @click.prevent="toggleMask" aria-label="Toggle">
+      <button :class="[$style.eyeButton, show || $style.eyeButtonHidden]" @click.prevent="toggleMask"
+        aria-label="Toggle">
         <EyeIcon :class="$style.eyeIcon"></EyeIcon>
       </button>
     </template>
