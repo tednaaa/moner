@@ -6,10 +6,14 @@ const props = defineProps<{
   isLoading?: boolean
   type?: ButtonHTMLAttributes['type']
 }>()
+const emit = defineEmits<{
+  click: [event: MouseEvent]
+}>()
 </script>
 
 <template>
-  <button :class="[$style.button, isLoading && $style.buttonLoading]" :type="props.type">
+  <button :class="[$style.button, isLoading && $style.buttonLoading]" :type="props.type"
+    @click="event => emit('click', event)">
     <BaseSpinner :class="$style.spinner" :size="35" big-path-color="white" small-path-color="#13d7bd" />
     <slot></slot>
   </button>

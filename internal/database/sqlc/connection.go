@@ -4,20 +4,22 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/jackc/pgx/v5"
 	"gitlab.com/tednaaa/moner/internal/config"
 )
 
-func Setup() {
-	connection, err := pgx.Connect(context.Background(), getPostgresDSN())
+func NewConnection() (*pgx.Conn, Queries) {
+	ctx := context.Background()
 
+	conn, err := pgx.Connect(ctx, getPostgresDSN())
 	if err != nil {
 		log.Fatal("Unable to connect to database:", err)
-		os.Exit(1)
 	}
-	defer connection.Close(context.Background())
+
+	queries := New(conn)
+
+	return conn, *queries
 }
 
 func getPostgresDSN() string {

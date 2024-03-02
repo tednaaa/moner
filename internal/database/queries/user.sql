@@ -8,3 +8,8 @@ INSERT INTO users (
 	$2,
 	$3
 ) RETURNING *;
+
+-- name: GetUserByEmailOrUsername :one
+SELECT * FROM users
+   WHERE username = $1
+   OR email = $2;

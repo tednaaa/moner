@@ -16,6 +16,7 @@ import googleIcon from '@/shared/icons/google-icon.vue'
 import gitlabIcon from '@/shared/icons/gitlab-icon.vue'
 import githubIcon from '@/shared/icons/github-icon.vue'
 import BaseButton from '@/shared/ui/base-button/base-button.vue';
+import { useUserStore } from '@/modules/auth/auth.store';
 
 const status = ref<AuthLayoutStatus>('default')
 
@@ -34,8 +35,9 @@ const { handleSubmit } = useForm({
   ),
 });
 
-const onSubmit = handleSubmit(values => {
-  console.log(values)
+const user = useUserStore()
+const onSubmit = handleSubmit(({ emailOrUsername, password }) => {
+  user.authorize(emailOrUsername, password)
 });
 </script>
 
@@ -52,7 +54,7 @@ const onSubmit = handleSubmit(values => {
     <span :class="$style.divider">or</span>
 
     <div :class="$style.inputGroup">
-      <BaseInput name="emailOrUsername" label="Email or Username" type="email"></BaseInput>
+      <BaseInput name="emailOrUsername" label="Email or Username" type="text"></BaseInput>
       <BasePassword name="password" label="Password"></BasePassword>
     </div>
     <BaseButton :class="$style.button">Log In</BaseButton>

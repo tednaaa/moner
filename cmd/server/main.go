@@ -1,22 +1,31 @@
 package main
 
 import (
+	"context"
+
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gitlab.com/tednaaa/moner/internal/config"
-	"gitlab.com/tednaaa/moner/internal/database"
+	database "gitlab.com/tednaaa/moner/internal/database/sqlc"
 	"gitlab.com/tednaaa/moner/internal/user"
 )
 
 func main() {
 	config.Load()
-	database.Setup()
+	conn, queries := database.NewConnection()
+	defer conn.Close(context.Background())
 
 	gin.SetMode(config.App.GinMode)
 	router := gin.Default()
 
-	api := router.Group("/api")
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowHeaders:     []string{"Cookie", "Content-Length", "Content-Type"},
+		AllowCredentials: true,
+	}))
 
-	user.Router(api.Group("/user"))
+	api := router.Group("/api")
+	user.NewUserHandler(api, queries)
 
 	router.Run(":" + config.App.Port)
 }
