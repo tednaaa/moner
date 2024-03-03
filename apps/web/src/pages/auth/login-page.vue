@@ -16,7 +16,7 @@ import googleIcon from '@/shared/icons/google-icon.vue'
 import gitlabIcon from '@/shared/icons/gitlab-icon.vue'
 import githubIcon from '@/shared/icons/github-icon.vue'
 import BaseButton from '@/shared/ui/base-button/base-button.vue';
-import { useUserStore } from '@/modules/auth/auth.store';
+import { useUserStore } from '@/modules/user/user.store';
 
 const status = ref<AuthLayoutStatus>('default')
 
@@ -35,9 +35,9 @@ const { handleSubmit } = useForm({
   ),
 });
 
-const user = useUserStore()
-const onSubmit = handleSubmit(({ emailOrUsername, password }) => {
-  user.authorize(emailOrUsername, password)
+const { authorizeUser } = useUserStore()
+const onSubmit = handleSubmit((userCredentials) => {
+  authorizeUser(userCredentials)
 });
 </script>
 

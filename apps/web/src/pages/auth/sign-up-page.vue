@@ -11,7 +11,7 @@ import { routes } from '@/shared/routes';
 import BaseInput from '@/shared/ui/base-input/base-input.vue';
 import BasePassword from '@/shared/ui/base-password/base-password.vue';
 import BaseLink from '@/shared/ui/base-link/base-link.vue';
-import { useUserStore } from '@/modules/auth/auth.store'
+import { useUserStore } from '@/modules/user/user.store'
 
 import googleIcon from '@/shared/icons/google-icon.vue'
 import gitlabIcon from '@/shared/icons/gitlab-icon.vue'
@@ -19,7 +19,6 @@ import githubIcon from '@/shared/icons/github-icon.vue'
 import BaseButton from '@/shared/ui/base-button/base-button.vue';
 
 const status = ref<AuthLayoutStatus>('default')
-
 
 const oAuthList = [
   { iconComponent: googleIcon },
@@ -37,9 +36,9 @@ const { handleSubmit } = useForm({
   ),
 });
 
-const user = useUserStore()
-const onSubmit = handleSubmit(({ email, username, password }) => {
-  user.create(email, username, password)
+const { createUser } = useUserStore()
+const onSubmit = handleSubmit((userCredentials) => {
+  createUser(userCredentials)
 });
 </script>
 

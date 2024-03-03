@@ -1,4 +1,3 @@
-import { useUserStore } from '@/modules/auth/auth.store'
 import { routes } from '@/shared/routes'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -48,15 +47,6 @@ export const router = createRouter({
       component: () => import('./dashboard-page.vue'),
     },
   ]
-})
-
-router.beforeEach(async (to) => {
-  const { checkUser } = useUserStore()
-  const isLoggedIn = await checkUser()
-  const isRootRoute = to.path === '/'
-
-  if (isRootRoute || to.meta.requiresAuth && !isLoggedIn) return { name: routes.LOGIN }
-  if (isRootRoute || to.meta.hideForLogged && isLoggedIn) return { name: routes.DASHBOARD }
 })
 
 declare module 'vue-router' {
