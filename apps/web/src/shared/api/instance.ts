@@ -7,4 +7,5 @@ export const apiInstance = axios.create({
   },
   withCredentials: true,
   timeout: 1000,
+  validateStatus: () => true
 });

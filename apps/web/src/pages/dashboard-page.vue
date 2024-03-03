@@ -1,12 +1,12 @@
 <script setup lang='ts'>
-import { useUserStore } from '@/modules/auth/auth.store';
+import { useUserStore } from '@/modules/user/user.store';
 import BaseButton from '@/shared/ui/base-button/base-button.vue';
 
-const user = useUserStore()
+const { logoutUser } = useUserStore()
 </script>
 
 <template>
-  <BaseButton @click="user.logout">Logout</BaseButton>
+  <BaseButton @click="logoutUser">Logout</BaseButton>
 </template>
 
 <style module lang='scss'></style>
