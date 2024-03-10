@@ -1,6 +1,6 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 
-import { apiAuthorizeUser, apiCreateUser, apiGetUser } from '@/shared/api/user/user.api'
+import { apiAuthorizeUser, apiCreateUser, apiGetUser, apiLogoutUser } from '@/shared/api/user/user.api'
 import { useToast } from 'vue-toastification'
 import { ref } from 'vue'
 
@@ -49,7 +49,6 @@ export const useUserStore = defineStore('user', () => {
     const { data } = await apiGetUser()
 
     if ('error' in data) {
-      toast.error(data.error, { timeout: 5000 })
       isLoggedIn.value = false
       return false
     }
@@ -58,7 +57,9 @@ export const useUserStore = defineStore('user', () => {
     return true
   }
 
-  function logoutUser() {
+  async function logoutUser() {
+    await apiLogoutUser()
+
     user.value = getUserDefaultState()
     isLoggedIn.value = false
     router.push({ name: routes.LOGIN })

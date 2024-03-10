@@ -13,3 +13,7 @@ export function apiAuthorizeUser({ emailOrUsername, password }: ApiAuthorizeUser
 export function apiGetUser() {
   return apiInstance.get<ApiUserResponse>('/user')
 }
+
+export function apiLogoutUser() {
+  return apiInstance.get('/user/logout')
+}

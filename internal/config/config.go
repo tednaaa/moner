@@ -15,10 +15,22 @@ type Database struct {
 	DatabaseName     string `env:"POSTGRES_DB" env-required:"true"`
 }
 
+type OAuth struct {
+	GoogleClientID     string `env:"GOOGLE_CLIENT_ID" env-required:"true"`
+	GoogleClientSecret string `env:"GOOGLE_CLIENT_SECRET" env-required:"true"`
+	GitlabClientID     string `env:"GITLAB_CLIENT_ID" env-required:"true"`
+	GitlabClientSecret string `env:"GITLAB_CLIENT_SECRET" env-required:"true"`
+	GithubClientID     string `env:"GITHUB_CLIENT_ID" env-required:"true"`
+	GithubClientSecret string `env:"GITHUB_CLIENT_SECRET" env-required:"true"`
+}
+
 type Config struct {
 	Port       string `env:"PORT" env-required:"true"`
 	GinMode    string `env:"GIN_MODE" env-required:"true"`
 	Jwt_Secret string `env:"JWT_SECRET" env-required:"true"`
+	Api_Url    string `env:"API_URL" env-required:"true"`
+	Web_Url    string `env:"WEB_URL" env-required:"true"`
+	OAuth
 	Database
 }
 
