@@ -25,7 +25,7 @@ func NewConnection() (*pgx.Conn, Queries) {
 func getPostgresDSN() string {
 	return fmt.Sprintf(
 		"postgres://%v:%v@%v:%v/%v",
-		config.App.DatabaseUser, config.App.DatabasePassword,
-		config.App.DatabaseHost, config.App.DatabasePort, config.App.DatabaseName,
+		config.Database.User, config.Database.Password,
+		config.Database.Host, config.Database.Port, config.Database.Name,
 	)
 }

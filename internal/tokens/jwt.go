@@ -14,7 +14,7 @@ func CreateToken(email, username string, duration time.Duration) (string, error)
 	}
 
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
-	signedToken, err := jwtToken.SignedString([]byte(config.App.Jwt_Secret))
+	signedToken, err := jwtToken.SignedString([]byte(config.Auth.Jwt_Secret))
 	if err != nil {
 		return "", err
 	}
@@ -24,7 +24,7 @@ func CreateToken(email, username string, duration time.Duration) (string, error)
 
 func VerifyToken(token string) (*Payload, error) {
 	jwtToken, err := jwt.ParseWithClaims(token, &Payload{}, func(t *jwt.Token) (interface{}, error) {
-		return []byte(config.App.Jwt_Secret), nil
+		return []byte(config.Auth.Jwt_Secret), nil
 	})
 	if err != nil {
 		return nil, err
