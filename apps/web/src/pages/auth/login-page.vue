@@ -17,13 +17,14 @@ import gitlabIcon from '@/shared/icons/gitlab-icon.vue'
 import githubIcon from '@/shared/icons/github-icon.vue'
 import BaseButton from '@/shared/ui/base-button/base-button.vue';
 import { useUserStore } from '@/modules/user/user.store';
+import { API_URL } from '@/shared/config';
 
 const status = ref<AuthLayoutStatus>('default')
 
 const oAuthList = [
-  { iconComponent: googleIcon },
-  { iconComponent: gitlabIcon },
-  { iconComponent: githubIcon }
+  { provider: 'google', iconComponent: googleIcon },
+  { provider: 'gitlab', iconComponent: gitlabIcon },
+  { provider: 'github', iconComponent: githubIcon }
 ]
 
 const { handleSubmit } = useForm({
@@ -46,9 +47,9 @@ const onSubmit = handleSubmit((userCredentials) => {
     <h1 :class="$style.title">Log in via</h1>
     <ul :class="$style.OAuthList">
       <li :class="$style.OAuthItem" v-for="oAuth, index in oAuthList" :key="index">
-        <button :class="$style.OAuthButton">
+        <a :class="$style.OAuthLink" :href="`${API_URL}/oauth/${oAuth.provider}`">
           <component :is="oAuth.iconComponent"></component>
-        </button>
+        </a>
       </li>
     </ul>
     <span :class="$style.divider">or</span>
@@ -95,7 +96,7 @@ const onSubmit = handleSubmit((userCredentials) => {
   }
 }
 
-.OAuthButton {
+.OAuthLink {
   padding: 12px;
 }
 

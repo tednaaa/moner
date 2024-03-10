@@ -19,13 +19,14 @@ func main() {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowOrigins:     []string{config.App.Web_Url},
 		AllowHeaders:     []string{"Cookie", "Content-Length", "Content-Type"},
 		AllowCredentials: true,
 	}))
 
 	api := router.Group("/api")
 	user.NewUserHandler(api, queries)
+	user.NewOAuthHandler(api, queries)
 
 	router.Run(":" + config.App.Port)
 }

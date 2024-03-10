@@ -19,13 +19,13 @@ type userHandler struct {
 func NewUserHandler(api *gin.RouterGroup, queries database.Queries) {
 	userHandler := &userHandler{queries: queries}
 
-	group := api.Group("/user")
-	group.POST("", userHandler.create)
-	group.POST("/authorize", userHandler.authorize)
+	userGroup := api.Group("/user")
+	userGroup.POST("", userHandler.create)
+	userGroup.POST("/authorize", userHandler.authorize)
+	userGroup.GET("/logout", userHandler.logout)
 
-	authorizedGroup := group.Use(AuthMiddleware())
+	authorizedGroup := userGroup.Use(AuthMiddleware())
 	authorizedGroup.GET("", userHandler.get)
-	authorizedGroup.GET("/logout", userHandler.logout)
 }
 
 const jwtDuration = time.Hour * 24 * 3
