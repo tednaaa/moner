@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	config.Load()
+	config.Load(".env")
 	conn, queries := database.NewConnection()
 	defer conn.Close(context.Background())
 

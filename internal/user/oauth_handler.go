@@ -24,9 +24,9 @@ func NewOAuthHandler(api *gin.RouterGroup, queries database.Queries) {
 	oauthHandler := &oauthHandler{queries: queries}
 
 	goth.UseProviders(
-		google.New(config.App.GoogleClientID, config.App.GoogleClientSecret, oAuthCallbackLink("google"), "https://www.googleapis.com/auth/userinfo.email"),
-		gitlab.New(config.App.GitlabClientID, config.App.GitlabClientSecret, oAuthCallbackLink("gitlab"), "read_user"),
-		github.New(config.App.GithubClientID, config.App.GithubClientSecret, oAuthCallbackLink("github")),
+		google.New(config.Auth.GoogleClientID, config.Auth.GoogleClientSecret, oAuthCallbackLink("google"), "https://www.googleapis.com/auth/userinfo.email"),
+		gitlab.New(config.Auth.GitlabClientID, config.Auth.GitlabClientSecret, oAuthCallbackLink("gitlab"), "read_user"),
+		github.New(config.Auth.GithubClientID, config.Auth.GithubClientSecret, oAuthCallbackLink("github")),
 	)
 
 	oauthGroup := api.Group("/oauth")
