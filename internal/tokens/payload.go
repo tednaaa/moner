@@ -1,6 +1,7 @@
 package tokens
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -16,7 +17,7 @@ type Payload struct {
 func NewPayload(email, username string, duration time.Duration) (*Payload, error) {
 	tokenID, err := uuid.NewRandom()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to generate token ID: %w", err)
 	}
 
 	payload := Payload{

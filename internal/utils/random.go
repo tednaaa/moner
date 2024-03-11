@@ -1,29 +1,29 @@
 package utils
 
 import (
+	"crypto/rand"
 	"fmt"
-	"math/rand"
-	"strings"
 )
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz"
+const minRandomString = 6
 
 func RandomString(length int) string {
-	var sb strings.Builder
-	k := len(alphabet)
-
-	for i := 0; i < length; i++ {
-		c := alphabet[rand.Intn(k)]
-		sb.WriteByte(c)
+	bytes := make([]byte, length)
+	_, err := rand.Read(bytes)
+	if err != nil {
+		return ""
 	}
-
-	return sb.String()
+	for index := range bytes {
+		bytes[index] = alphabet[int(bytes[index])%len(alphabet)]
+	}
+	return string(bytes)
 }
 
 func RandomUsername() string {
-	return RandomString(6)
+	return RandomString(minRandomString)
 }
 
 func RandomEmail() string {
-	return fmt.Sprintf("%s@random.com", RandomString(6))
+	return fmt.Sprintf("%s@random.com", RandomString(minRandomString))
 }

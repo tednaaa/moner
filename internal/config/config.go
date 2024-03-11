@@ -7,13 +7,6 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type app struct {
-	Port    string `env:"PORT" env-required:"true"`
-	GinMode string `env:"GIN_MODE" env-required:"true"`
-	Api_Url string `env:"API_URL" env-required:"true"`
-	Web_Url string `env:"WEB_URL" env-required:"true"`
-}
-
 type database struct {
 	User     string `env:"POSTGRES_USER" env-required:"true"`
 	Password string `env:"POSTGRES_PASSWORD" env-required:"true"`
@@ -22,8 +15,12 @@ type database struct {
 	Name     string `env:"POSTGRES_DB" env-required:"true"`
 }
 
+func (d *database) GetPostgresDSN() string {
+	return "postgres://" + d.User + ":" + d.Password + "@" + d.Host + ":" + d.Port + "/" + d.Name
+}
+
 type auth struct {
-	Jwt_Secret         string `env:"JWT_SECRET" env-required:"true"`
+	JwtSecret          string `env:"JWT_SECRET" env-required:"true"`
 	GoogleClientID     string `env:"GOOGLE_CLIENT_ID" env-required:"true"`
 	GoogleClientSecret string `env:"GOOGLE_CLIENT_SECRET" env-required:"true"`
 	GitlabClientID     string `env:"GITLAB_CLIENT_ID" env-required:"true"`
@@ -38,26 +35,27 @@ type email struct {
 	SenderPassword string `env:"EMAIL_SENDER_PASSWORD" env-required:"true"`
 }
 
-var App app
-var Database database
-var Auth auth
-var Email email
-var configs = []interface{}{
-	&App,
-	&Database,
-	&Auth,
-	&Email,
+type Config struct {
+	Database  database
+	Auth      auth
+	Email     email
+	GinMode   string `env:"GIN_MODE" env-required:"true"`
+	Port      string `env:"PORT" env-required:"true"`
+	ServerURL string `env:"SERVER_URL" env-required:"true"`
+	WebURL    string `env:"WEB_URL" env-required:"true"`
 }
 
-func Load(path string) {
+func Load(path string) *Config {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
-	for _, config := range configs {
-		if err := cleanenv.ReadConfig(path, config); err != nil {
-			log.Fatalf("cannot read config for %T: %s", config, err)
-		}
+	var config Config
+	err = cleanenv.ReadConfig(path, &config)
+	if err != nil {
+		log.Fatalf("cannot read config for %T: %s", config, err)
 	}
+
+	return &config
 }
