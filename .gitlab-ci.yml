@@ -35,7 +35,7 @@ golang-lint:
   extends: .go-cache
   allow_failure: false
   script:
-    - echo TODO fix this after refactor
+    - make lint
 
 golang-test:
   <<: *golang_job

@@ -12,24 +12,13 @@ const (
 	smtpServerAddress = "smtp.gmail.com:587"
 )
 
-type EmailSender interface {
-	SendEmail(
-		subject string,
-		content string,
-		to []string,
-		cc []string,
-		bcc []string,
-		attachedFiles []string,
-	) error
-}
-
 type GmailSender struct {
 	name              string
 	fromEmailAddress  string
 	fromEmailPassword string
 }
 
-func NewGmailSender(name string, fromEmailAddress string, fromEmailPassword string) EmailSender {
+func NewGmailSender(name string, fromEmailAddress string, fromEmailPassword string) *GmailSender {
 	return &GmailSender{
 		name:              name,
 		fromEmailAddress:  fromEmailAddress,
@@ -61,5 +50,6 @@ func (s *GmailSender) SendEmail(
 	}
 
 	smtpAuth := smtp.PlainAuth("", s.fromEmailAddress, s.fromEmailPassword, smtpAuthAddress)
-	return e.Send(smtpServerAddress, smtpAuth)
+	err := e.Send(smtpServerAddress, smtpAuth)
+	return fmt.Errorf("failed to send email: %w", err)
 }

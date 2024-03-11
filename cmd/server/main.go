@@ -3,30 +3,34 @@ package main
 import (
 	"context"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"gitlab.com/tednaaa/moner/internal/config"
 	database "gitlab.com/tednaaa/moner/internal/database/sqlc"
-	"gitlab.com/tednaaa/moner/internal/user"
+	"gitlab.com/tednaaa/moner/internal/server"
 )
 
 func main() {
-	config.Load(".env")
-	conn, queries := database.NewConnection()
-	defer conn.Close(context.Background())
+	config := config.Load(".env")
 
-	gin.SetMode(config.App.GinMode)
-	router := gin.Default()
+	gin.SetMode(config.GinMode)
+	zerolog.SetGlobalLevel(zerolog.TraceLevel)
 
-	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{config.App.Web_Url},
-		AllowHeaders:     []string{"Cookie", "Content-Length", "Content-Type"},
-		AllowCredentials: true,
-	}))
+	connPool, err := pgxpool.New(context.Background(), config.Database.GetPostgresDSN())
+	if err != nil {
+		log.Fatal().Err(err).Msg("cannot connect to db")
+	}
+	store := database.NewStore(connPool)
 
-	api := router.Group("/api")
-	user.NewUserHandler(api, queries)
-	user.NewOAuthHandler(api, queries)
+	server, err := server.NewServer(*config, *store)
+	if err != nil {
+		log.Fatal().Err(err).Msg("cannot create server")
+	}
 
-	router.Run(":" + config.App.Port)
+	err = server.Start(":" + config.Port)
+	if err != nil {
+		log.Fatal().Err(err).Msg("cannot start server")
+	}
 }

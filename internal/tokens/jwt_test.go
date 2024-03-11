@@ -1,4 +1,4 @@
-package tokens
+package tokens_test
 
 import (
 	"testing"
@@ -6,10 +6,14 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/require"
+	"gitlab.com/tednaaa/moner/internal/tokens"
 	"gitlab.com/tednaaa/moner/internal/utils"
 )
 
 func TestJWT(t *testing.T) {
+	jwtMaker, err := tokens.NewJWTMaker(utils.RandomString(tokens.MinSecretKeySize))
+	require.NoError(t, err)
+
 	email := utils.RandomEmail()
 	username := utils.RandomUsername()
 	duration := time.Minute
@@ -18,11 +22,11 @@ func TestJWT(t *testing.T) {
 	notBefore := time.Now()
 	expiredAt := issuedAt.Add(duration)
 
-	token, err := CreateToken(email, username, duration)
+	token, err := jwtMaker.CreateToken(email, username, duration)
 	require.NoError(t, err)
 	require.NotEmpty(t, token)
 
-	payload, err := VerifyToken(token)
+	payload, err := jwtMaker.VerifyToken(token)
 
 	require.NoError(t, err)
 	require.NotEmpty(t, payload)
@@ -36,26 +40,32 @@ func TestJWT(t *testing.T) {
 }
 
 func TestExpiredJWTToken(t *testing.T) {
-	token, err := CreateToken(utils.RandomEmail(), utils.RandomUsername(), -time.Minute)
+	jwtMaker, err := tokens.NewJWTMaker(utils.RandomString(tokens.MinSecretKeySize))
+	require.NoError(t, err)
+
+	token, err := jwtMaker.CreateToken(utils.RandomEmail(), utils.RandomUsername(), -time.Minute)
 	require.NoError(t, err)
 	require.NotEmpty(t, token)
 
-	payload, err := VerifyToken(token)
+	payload, err := jwtMaker.VerifyToken(token)
 	require.Error(t, err)
-	require.ErrorContains(t, err, jwt.ErrTokenExpired.Error())
+	require.ErrorIs(t, err, jwt.ErrTokenExpired)
 	require.Nil(t, payload)
 }
 
 func TestInvalidJWTTokenAlgNone(t *testing.T) {
-	payload, err := NewPayload(utils.RandomEmail(), utils.RandomUsername(), time.Minute)
+	jwtMaker, err := tokens.NewJWTMaker(utils.RandomString(tokens.MinSecretKeySize))
+	require.NoError(t, err)
+
+	payload, err := tokens.NewPayload(utils.RandomEmail(), utils.RandomUsername(), time.Minute)
 	require.NoError(t, err)
 
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodNone, payload)
 	token, err := jwtToken.SignedString(jwt.UnsafeAllowNoneSignatureType)
 	require.NoError(t, err)
 
-	payload, err = VerifyToken(token)
+	payload, err = jwtMaker.VerifyToken(token)
 	require.Error(t, err)
-	require.ErrorContains(t, err, jwt.ErrTokenUnverifiable.Error())
+	require.ErrorIs(t, err, jwt.ErrTokenUnverifiable)
 	require.Nil(t, payload)
 }

@@ -16,6 +16,9 @@ run: build
 test:
 	@go test -v -cover ./...
 
+lint:
+	@golangci-lint run
+
 postgres:
 	@docker run --rm -d \
 		--name $(POSTGRES_CONTAINER_NAME) \

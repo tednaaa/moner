@@ -1,33 +1,47 @@
 package tokens
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"gitlab.com/tednaaa/moner/internal/config"
 )
 
-func CreateToken(email, username string, duration time.Duration) (string, error) {
+const MinSecretKeySize = 32
+
+type JWTMaker struct {
+	secretKey string
+}
+
+func NewJWTMaker(secretKey string) (*JWTMaker, error) {
+	if len(secretKey) < MinSecretKeySize {
+		return nil, fmt.Errorf("invalid key size: must be at least %d characters", MinSecretKeySize)
+	}
+
+	return &JWTMaker{secretKey}, nil
+}
+
+func (j *JWTMaker) CreateToken(email, username string, duration time.Duration) (string, error) {
 	payload, err := NewPayload(email, username, duration)
 	if err != nil {
 		return "", err
 	}
 
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
-	signedToken, err := jwtToken.SignedString([]byte(config.Auth.Jwt_Secret))
+	signedToken, err := jwtToken.SignedString([]byte(j.secretKey))
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to create token: %w", err)
 	}
 
 	return signedToken, nil
 }
 
-func VerifyToken(token string) (*Payload, error) {
-	jwtToken, err := jwt.ParseWithClaims(token, &Payload{}, func(t *jwt.Token) (interface{}, error) {
-		return []byte(config.Auth.Jwt_Secret), nil
+func (j *JWTMaker) VerifyToken(token string) (*Payload, error) {
+	jwtToken, err := jwt.ParseWithClaims(token, &Payload{}, func(_ *jwt.Token) (interface{}, error) {
+		return []byte(j.secretKey), nil
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid token: %w", err)
 	}
 
 	return jwtToken.Claims.(*Payload), nil
