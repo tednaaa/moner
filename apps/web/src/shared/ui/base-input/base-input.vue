@@ -44,24 +44,19 @@ const { value, errorMessage } = useField(() => props.name);
   top: 50%;
   left: var(--input-side-offset);
   transform: translateY(-50%);
-  z-index: 0;
+  border-radius: 6px;
   transition: 0.3s;
 }
 
 .input {
-  z-index: 1;
   padding: 10px var(--input-side-offset);
   outline: none;
   border-radius: 10px;
-
-  &:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px white inset;
-    -webkit-text-fill-color: inherit;
-    background-color: transparent;
-  }
 }
 
 .input:focus+.label,
+.input:autofill+.label,
+.input:-webkit-autofill+.label,
 .labelActive {
   font-size: 14px;
   top: -2px;
