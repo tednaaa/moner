@@ -28,7 +28,6 @@ impl Settings {
 			website_url: get_env("WEBSITE_URL"),
 
 			server: Server {
-				app_name: get_env("CARGO_PKG_NAME"),
 				port: get_env::<u16>("PORT"),
 			},
 
@@ -53,7 +52,6 @@ impl Settings {
 
 #[derive(Debug, Clone)]
 pub struct Server {
-	pub app_name: String,
 	pub port: u16,
 }
 
