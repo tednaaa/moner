@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM users WHERE email = $1 AND is_verified = false",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "fed9b39ea7c62079a6da7b76e58e9fc7d3df4add9f3ed21a92bae53de8810950"
+}
