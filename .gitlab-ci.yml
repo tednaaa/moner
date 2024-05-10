@@ -1,98 +1,82 @@
-.golang_job: &golang_job
-  image: golang:1.21.6
-
-.web_jobs: &web_job
-  image: node:20.11.0
-  before_script:
-    - cd apps/web
-    - npm ci
-  cache:
-    key:
-      files:
-        - package-lock.json
-
-
-.go-cache:
-  variables:
-    GOPATH: $CI_PROJECT_DIR/.go
-  before_script:
-    - mkdir -p .go
-  cache:
-    paths:
-      - .go/pkg/mod/
+stages:
+    - lint
+    - build
+    - test
 
 variables:
-  OUTPUT_NAME: __bin__/$CI_PROJECT_NAME
+    RUSTFLAGS: "-Dwarnings"
 
-stages:
-  - lint
-  - test
-  - build
+.backend_jobs: &backend_job
+    image: rust:latest
+    before_script:
+        - rustc --version
+        - cargo --version
+        - export SQLX_OFFLINE=true
+        - cp .env.example .env
+    cache:
+        paths:
+            - $CARGO_HOME
+            - $CI_PROJECT_DIR/target/
 
-golang-lint:
-  image: golangci/golangci-lint:latest
-  stage: lint
-  extends: .go-cache
-  allow_failure: false
-  script:
-    - make lint
+.web_jobs: &web_job
+    image: node:20.11.0
+    before_script:
+        - cd ./web
+        - npm ci
+    cache:
+        key:
+            files:
+                - package-lock.json
 
-golang-test:
-  <<: *golang_job
-  stage: test
-  services:
-    - postgres
-  variables:
-    POSTGRES_HOST: postgres
-    POSTGRES_PORT: 5432
-    POSTGRES_DB: test
-    POSTGRES_USER: test_user
-    POSTGRES_PASSWORD: test_password
-    POSTGRES_HOST_AUTH_METHOD: trust
-  script:
-    - go fmt $(go list ./... | grep -v /vendor/)
-    - go vet $(go list ./... | grep -v /vendor/)
-    - go test -race $(go list ./... | grep -v /vendor/)
+backend_lint:
+    <<: *backend_job
+    stage: lint
+    script:
+        - rustup component add clippy
+        - cargo clippy
 
-golang-build:
-  <<: *golang_job
-  stage: build
-  script:
-    - make build
-  artifacts:
-    paths:
-      - $OUTPUT_NAME
+backend_build:
+    <<: *backend_job
+    stage: build
+    script:
+        - cp .env.example .env
+        - cargo build --verbose
 
+backend_test:
+    <<: *backend_job
+    stage: test
+    script:
+        - cargo test --verbose
 
 web-lint:
-  <<: *web_job
-  stage: lint
-  script:
-    - npm run lint
-
-web-test:
-  <<: *web_job
-  stage: test
-  script:
-    - npm run test:unit
-
-web-test-e2e:
-  image: cypress/browsers:node-20.11.0-chrome-121.0.6167.85-1-ff-120.0-edge-121.0.2277.83-1
-  stage: test
-  script:
-    - cd apps/web
-    - npm ci
-    - npm run preview &
-    - npx cypress run --browser chrome
-  artifacts:
-    when: always
-    paths:
-      - cypress/videos/**/*.mp4
-      - cypress/screenshots/**/*.png
-    expire_in: 1 day
+    <<: *web_job
+    stage: lint
+    script:
+        - npm run lint
 
 web-build:
-  <<: *web_job
-  stage: build
-  script:
-   - npm run build
+    <<: *web_job
+    stage: build
+    script:
+        - npm run build
+
+web-test:
+    <<: *web_job
+    stage: test
+    script:
+        - npm run test:unit
+
+web-test-e2e:
+    image: cypress/browsers:node-20.11.0-chrome-121.0.6167.85-1-ff-120.0-edge-121.0.2277.83-1
+    stage: test
+    script:
+        - cd ./web
+        - npm ci
+        - npm run preview &
+        - npx cypress run --browser chrome
+    artifacts:
+        when: always
+        paths:
+            - cypress/videos/**/*.mp4
+            - cypress/screenshots/**/*.png
+        expire_in: 3 day
