@@ -1,11 +1,8 @@
 {
-  "go.lintOnSave": "package",
-  "go.lintTool": "golangci-lint",
-  "go.lintFlags": [
-    "--fast"
-  ],
-  "[go]": {
-    "editor.defaultFormatter": "golang.go"
+  "rust-analyzer.check.command": "clippy",
+  "rust-analyzer.checkOnSave": true,
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer"
   },
   "[typescript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
@@ -14,6 +11,6 @@
     "editor.defaultFormatter": "Vue.volar"
   },
   "[scss]": {
-    "editor.defaultFormatter": "vscode.css-language-features",
+    "editor.defaultFormatter": "vscode.css-language-features"
   }
 }
