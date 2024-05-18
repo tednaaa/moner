@@ -1,17 +1,26 @@
-import { routes } from '@/shared/routes'
 import { createRouter, createWebHistory } from 'vue-router'
+import { routes } from '@/shared/routes'
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/:pathMatch(.*)*',
-      name: routes.NOT_FOUND,
-      component: () => import('./not-found-page.vue')
+      path: '/',
+      name: routes.ROOT,
+      redirect: { name: routes.LOGIN }
+    },
+    {
+      path: '/:username/:projectId',
+      name: routes.PROJECT,
+      component: () => import('./project-page.vue'),
+    },
+    {
+      path: '/:username',
+      name: routes.PROFILE,
+      component: () => import('./profile-page.vue'),
     },
     {
       path: '/auth',
-      meta: { hideForLogged: true },
       children: [
         {
           path: 'login',
@@ -40,18 +49,5 @@ export const router = createRouter({
         },
       ],
     },
-    {
-      path: '/dashboard',
-      name: routes.DASHBOARD,
-      meta: { requiresAuth: true },
-      component: () => import('./dashboard-page.vue'),
-    },
   ]
 })
-
-declare module 'vue-router' {
-  interface RouteMeta {
-    requiresAuth?: boolean
-    hideForLogged?: boolean
-  }
-}

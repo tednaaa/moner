@@ -12,6 +12,12 @@ pub struct UserResponse {
 	pub updated_at: DateTime<Utc>,
 }
 
+#[derive(Debug, Serialize)]
+pub struct PublicUserResponse {
+	pub email: String,
+	pub username: String,
+}
+
 #[derive(Debug, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 

@@ -1,12 +1,6 @@
-<script setup lang="ts">
-const props = defineProps<{
-  class?: string,
-}>()
-</script>
-
 <template>
-  <svg :class="props.class" width="15.000000" height="15.000000" viewBox="0 0 15 15" fill="none"
-    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <svg width="15.000000" height="15.000000" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
       <clipPath id="clip19_1228">
         <rect id="eye" width="15.000000" height="15.000000" fill="white" fill-opacity="0" />
