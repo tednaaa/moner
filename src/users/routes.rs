@@ -1,7 +1,7 @@
 use std::{sync::Arc, thread, time::Duration};
 
 use axum::{
-	extract::State,
+	extract::{Path, State},
 	http::StatusCode,
 	middleware,
 	response::{IntoResponse, Response},
@@ -20,7 +20,7 @@ use crate::{
 
 use super::{
 	auth::{self, authorize_jwt, CurrentUser},
-	dtos::{ActivateUserRequest, CreateUserRequest, LoginUserRequest, UserResponse},
+	dtos::{ActivateUserRequest, CreateUserRequest, LoginUserRequest, PublicUserResponse, UserResponse},
 	password,
 	repository::UsersRepostory,
 };
@@ -61,6 +61,7 @@ pub fn init() -> Router<UsersState> {
 		.route("/users/activate", patch(activate_user_route))
 		.route("/users/login", post(login_user_route))
 		.route("/users/logout", get(logout_user_route))
+		.route("/users/:username", get(get_user_route))
 		.route("/users/oauth/:provider/callback", get(oauth_callback_route))
 		.route("/users/oauth/:provider/login", get(oauth_login_route))
 }
@@ -124,7 +125,7 @@ async fn activate_user_route(
 		log::error!("Failed to send welcome email: {error}");
 	}
 
-	Ok((StatusCode::ACCEPTED, Json(UserResponse::from(activated_user))))
+	Ok((StatusCode::OK, Json(UserResponse::from(activated_user))))
 }
 
 async fn login_user_route(
@@ -160,14 +161,14 @@ async fn login_user_route(
 	}
 
 	authorize_jwt(cookies, CurrentUser::from(user.clone())).map_err(|_| UsersApiError::FailedToLoginUser())?;
-	Ok((StatusCode::ACCEPTED, Json(UserResponse::from(user))))
+	Ok((StatusCode::OK, Json(UserResponse::from(user))))
 }
 
 async fn logout_user_route(cookies: Cookies) -> ApiResult<()> {
 	let access_token_cookie = Cookie::build(("access_token", "")).path("/").http_only(true).build();
 
 	cookies.remove(access_token_cookie);
-	Ok((StatusCode::ACCEPTED, ()))
+	Ok((StatusCode::OK, ()))
 }
 
 async fn get_me_route(
@@ -186,6 +187,18 @@ async fn get_me_route(
 	Ok((StatusCode::OK, Json(UserResponse::from(user))))
 }
 
+async fn get_user_route(
+	Path(username): Path<String>,
+	State(UsersState { users_repository, .. }): State<UsersState>,
+) -> ApiResult<Json<PublicUserResponse>> {
+	let user = users_repository
+		.find_user_by_username(&username)
+		.await
+		.map_err(|_| UsersApiError::UserNotFound(username))?;
+
+	Ok((StatusCode::OK, Json(PublicUserResponse::from(user))))
+}
+
 async fn delete_user_route(
 	Extension(current_user): Extension<CurrentUser>,
 	State(UsersState { users_repository, .. }): State<UsersState>,
@@ -195,7 +208,7 @@ async fn delete_user_route(
 		.await
 		.map_err(|_| UsersApiError::UserNotFound(current_user.user_id.to_string()))?;
 
-	Ok((StatusCode::ACCEPTED, ()))
+	Ok((StatusCode::OK, ()))
 }
 
 async fn reset_password_route(

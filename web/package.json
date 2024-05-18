@@ -13,13 +13,14 @@
   },
   "dependencies": {
     "@vee-validate/zod": "^4.12.5",
+    "@vueuse/core": "^10.9.0",
     "@vueuse/motion": "^2.1.0",
-    "axios": "^1.6.7",
     "pinia": "^2.1.7",
+    "primeicons": "^7.0.0",
+    "primevue": "^3.52.0",
     "vee-validate": "^4.12.5",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",
-    "vue-toastification": "^2.0.0-rc.5",
     "zod": "^3.22.4"
   },
   "devDependencies": {

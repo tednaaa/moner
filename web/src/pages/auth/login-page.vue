@@ -16,7 +16,7 @@ import googleIcon from '@/shared/icons/google-icon.vue'
 import gitlabIcon from '@/shared/icons/gitlab-icon.vue'
 import githubIcon from '@/shared/icons/github-icon.vue'
 import BaseButton from '@/shared/ui/base-button/base-button.vue';
-import { useUserStore } from '@/modules/user/user.store';
+import { useUserStore } from '@/entities/user/user.store';
 import { API_URL } from '@/shared/config';
 
 const status = ref<AuthLayoutStatus>('default')

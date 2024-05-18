@@ -10,8 +10,8 @@ insert_final_newline = true
 
 [*.{yml,json}]
 indent_style = space
-indent_size = 4
+indent_size = 2
 
-[*.{ts,vue}]
+[*.{ts,vue,scss}]
 indent_style = space
 indent_size = 2

@@ -1,20 +1,26 @@
 import './scss/main.scss'
-import "vue-toastification/dist/index.css";
+import 'primeicons/primeicons.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { MotionPlugin } from '@vueuse/motion';
-import Toast from "vue-toastification";
+import PrimeVue from 'primevue/config';
+import ToastService from 'primevue/toastservice';
+import Tooltip from 'primevue/tooltip';
 
 import App from './app.vue'
 
 import { router } from '@/pages/router'
+import { designSystem } from '@/shared/ui';
 
 const app = createApp(App)
 
-app.use(createPinia())
+app.use(PrimeVue, { unstyled: true, pt: designSystem })
 app.use(MotionPlugin)
-app.use(Toast);
+app.use(ToastService)
+app.directive('tooltip', Tooltip);
+
+app.use(createPinia())
 app.use(router)
 
 app.mount('#app')

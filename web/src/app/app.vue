@@ -1,22 +1,15 @@
 <script setup lang="ts">
-import { onBeforeMount } from 'vue';
-import { RouterView, useRoute, useRouter } from 'vue-router'
+import { RouterView } from 'vue-router'
+import Toast from 'primevue/toast';
 
-import { useUserStore } from '@/modules/user/user.store';
-import { routes } from '@/shared/routes';
+import { useUserStore } from '@/entities/user/user.store';
 
-const { getUser, isLoggedIn } = useUserStore()
-const router = useRouter();
-const { meta } = useRoute()
+const userStore = useUserStore()
 
-onBeforeMount(() => {
-  getUser()
-
-  if (meta.requiresAuth && !isLoggedIn) router.push({ name: routes.LOGIN })
-  if (meta.hideForLogged && isLoggedIn) router.push({ name: routes.DASHBOARD })
-})
+userStore.getCurrentUser()
 </script>
 
 <template>
-  <RouterView />
+  <Toast />
+  <RouterView v-if="!userStore.isLoading" />
 </template>

@@ -7,7 +7,7 @@ use sqlx::postgres::PgQueryResult;
 
 use crate::database::Database;
 
-use super::dtos::UserResponse;
+use super::dtos::{PublicUserResponse, UserResponse};
 
 #[derive(Clone)]
 pub struct UsersRepostory {
@@ -101,6 +101,15 @@ impl UsersRepostory {
 
 		Ok(user)
 	}
+
+	pub async fn find_user_by_username(&self, username: &str) -> anyhow::Result<User> {
+		let user = sqlx::query_as!(User, "SELECT * FROM users WHERE username = $1", username)
+			.fetch_one(&*self.database.pool)
+			.await
+			.map_err(|error| anyhow!(error).context("Failed to find user by username"))?;
+
+		Ok(user)
+	}
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone, sqlx::FromRow)]
@@ -122,6 +131,15 @@ impl From<User> for UserResponse {
 			username: user.username,
 			created_at: user.created_at,
 			updated_at: user.updated_at,
+		}
+	}
+}
+
+impl From<User> for PublicUserResponse {
+	fn from(user: User) -> Self {
+		Self {
+			email: user.email,
+			username: user.username,
 		}
 	}
 }
