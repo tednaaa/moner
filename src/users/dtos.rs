@@ -32,10 +32,16 @@ pub struct CreateUserRequest {
 
 #[derive(Debug, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
-pub struct ActivateUserRequest {
+pub struct VerifyUserRequest {
 	pub user_id: i64,
 	#[validate(length(min = 6, max = 6, message = "Code must be 6 characters"))]
 	pub code: String,
+}
+
+#[derive(Debug, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct ResendVerificationRequest {
+	pub user_id: i64,
 }
 
 #[derive(Debug, Deserialize, Validate)]

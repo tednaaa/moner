@@ -5,27 +5,19 @@ import { useForm } from 'vee-validate';
 import { object } from 'zod';
 
 import { passwordValidation, requiredString } from '@/shared/validation';
+import { routes } from '@/shared/routes';
 
 import AuthLayout, { type AuthLayoutStatus } from '@/layouts/auth-layout.vue'
-import { routes } from '@/shared/routes';
+import OauthBox from '@/widgets/oauth-box.vue';
+
 import BaseInput from '@/shared/ui/base-input/base-input.vue';
 import BasePassword from '@/shared/ui/base-password/base-password.vue';
 import BaseLink from '@/shared/ui/base-link/base-link.vue';
 
-import googleIcon from '@/shared/icons/google-icon.vue'
-import gitlabIcon from '@/shared/icons/gitlab-icon.vue'
-import githubIcon from '@/shared/icons/github-icon.vue'
 import BaseButton from '@/shared/ui/base-button/base-button.vue';
 import { useUserStore } from '@/entities/user/user.store';
-import { API_URL } from '@/shared/config';
 
 const status = ref<AuthLayoutStatus>('default')
-
-const oAuthList = [
-  { provider: 'google', iconComponent: googleIcon },
-  { provider: 'gitlab', iconComponent: gitlabIcon },
-  { provider: 'github', iconComponent: githubIcon }
-]
 
 const { handleSubmit } = useForm({
   validationSchema: toTypedSchema(
@@ -45,13 +37,7 @@ const onSubmit = handleSubmit((userCredentials) => {
 <template>
   <AuthLayout @submit="onSubmit" :status="status" status-text="I see you">
     <h1 :class="$style.title">Log in via</h1>
-    <ul :class="$style.OAuthList">
-      <li :class="$style.OAuthItem" v-for="oAuth, index in oAuthList" :key="index">
-        <a :class="$style.OAuthLink" :href="`${API_URL}/oauth/${oAuth.provider}`">
-          <component :is="oAuth.iconComponent"></component>
-        </a>
-      </li>
-    </ul>
+    <OauthBox />
     <span :class="$style.divider">or</span>
 
     <div :class="$style.inputGroup">
@@ -74,30 +60,6 @@ const onSubmit = handleSubmit((userCredentials) => {
   font-size: 32px;
   font-weight: 700;
   margin-bottom: 35px;
-}
-
-.OAuthList {
-  display: flex;
-  gap: 25px;
-  margin-bottom: 35px;
-}
-
-.OAuthItem {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 5px;
-  box-shadow: 1px 2px 5px 0px rgba(161, 161, 161, 0.25);
-  background-color: white;
-  transition: 0.3s;
-
-  &:hover {
-    background-color: var(--color-light-gray);
-  }
-}
-
-.OAuthLink {
-  padding: 12px;
 }
 
 .divider {

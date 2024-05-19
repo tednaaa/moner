@@ -59,7 +59,7 @@ impl UsersRepostory {
 		Ok(user)
 	}
 
-	pub async fn activate_user(&self, user_id: &i64) -> anyhow::Result<User> {
+	pub async fn verify_user(&self, user_id: &i64) -> anyhow::Result<User> {
 		let user = sqlx::query_as!(
 			User,
 			r#"
@@ -70,7 +70,7 @@ impl UsersRepostory {
 		)
 		.fetch_one(&*self.database.pool)
 		.await
-		.map_err(|error| anyhow!(error).context("Failed to activate user"))?;
+		.map_err(|error| anyhow!(error).context("Failed to verify user"))?;
 
 		Ok(user)
 	}

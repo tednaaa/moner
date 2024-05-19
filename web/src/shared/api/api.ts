@@ -7,6 +7,9 @@ export const useApiFetch = createFetch({
   fetchOptions: {
     mode: 'cors',
     credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    }
   },
   options: {
     async onFetchError(ctx) {

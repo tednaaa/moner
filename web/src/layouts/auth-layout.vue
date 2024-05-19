@@ -30,17 +30,12 @@ const emit = defineEmits<{
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 100px;
+  gap: 50px;
   height: 100%;
   width: 100%;
-  background: #283c86;
-  background: linear-gradient(to right, #45a247, #283c86);
 }
 
 .statusBar {
-  background-color: var(--color-blue);
-  border-radius: 40px;
-  padding: 30px;
   position: relative;
 }
 
@@ -89,13 +84,16 @@ const emit = defineEmits<{
 }
 
 .form {
-  padding: 60px 50px;
-  background-color: white;
-  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(38, 38, 38, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%);
+  border: 1px solid #616161;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
   max-width: 500px;
   width: 100%;
+  padding: 60px 50px;
+  border-radius: 20px;
 }
 </style>
