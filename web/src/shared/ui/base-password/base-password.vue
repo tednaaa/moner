@@ -47,12 +47,12 @@ function toggleMask() {
 
   &:focus-visible {
     outline: none;
-    background-color: var(--color-light-gray);
+    background-color: #2c2828;
     border-radius: 9px;
   }
 
   &:active {
-    background-color: var(--color-gray-active);
+    background-color: #424141;
   }
 }
 

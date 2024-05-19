@@ -21,12 +21,18 @@ const emit = defineEmits<{
 
 <style module lang='scss'>
 .button {
+  background-color: var(--color-blue);
+  color: white;
+  transition: 0.3s;
+  padding: 10px 25px;
+  border-radius: 10px;
   display: flex;
   justify-content: center;
   position: relative;
-  padding: 10px 25px;
-  color: white;
-  background-color: var(--color-blue);
+
+  &:hover {
+    background-color: #368be7;
+  }
 }
 
 .buttonLoading {

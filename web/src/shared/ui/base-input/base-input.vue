@@ -32,14 +32,14 @@ const { value, errorMessage } = useField(() => props.name);
 .inputWrapper {
   display: flex;
   position: relative;
-  border: 1px solid var(--color-gray);
+  border: 1px solid #5F5F5F;
   border-radius: 10px;
 
   --input-side-offset: 15px;
 }
 
 .label {
-  color: var(--color-gray);
+  color: white;
   position: absolute;
   top: 50%;
   left: var(--input-side-offset);
@@ -52,16 +52,26 @@ const { value, errorMessage } = useField(() => props.name);
   padding: 10px var(--input-side-offset);
   outline: none;
   border-radius: 10px;
+  color: white;
+
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: white;
+    box-shadow: none;
+  }
 }
 
 .input:focus+.label,
 .input:autofill+.label,
 .input:-webkit-autofill+.label,
 .labelActive {
-  font-size: 14px;
+  font-size: 13px;
   top: -2px;
-  background-color: white;
-  padding: 0 8px;
+  background-color: #1a1a1a;
+  padding: 0 5px;
 }
 
 .errorMessage {

@@ -20,7 +20,10 @@ use crate::{
 
 use super::{
 	auth::{self, authorize_jwt, CurrentUser},
-	dtos::{ActivateUserRequest, CreateUserRequest, LoginUserRequest, PublicUserResponse, UserResponse},
+	dtos::{
+		CreateUserRequest, LoginUserRequest, PublicUserResponse, ResendVerificationRequest, UserResponse,
+		VerifyUserRequest,
+	},
 	password,
 	repository::UsersRepostory,
 };
@@ -58,7 +61,8 @@ pub fn init() -> Router<UsersState> {
 		.route("/users/password/change", patch(change_password_route))
 		.route_layer(middleware::from_fn(auth::middleware))
 		.route("/users/register", post(register_user_route))
-		.route("/users/activate", patch(activate_user_route))
+		.route("/users/verify", patch(verify_user_route))
+		.route("/users/resend-verification", post(resend_verification_email_route))
 		.route("/users/login", post(login_user_route))
 		.route("/users/logout", get(logout_user_route))
 		.route("/users/:username", get(get_user_route))
@@ -102,13 +106,14 @@ async fn register_user_route(
 	Ok((StatusCode::CREATED, Json(UserResponse::from(created_user))))
 }
 
-async fn activate_user_route(
+async fn verify_user_route(
+	cookies: Cookies,
 	State(UsersState {
 		users_repository,
 		email_service,
 		mut verification_service,
 	}): State<UsersState>,
-	ValidatedJson(request): ValidatedJson<ActivateUserRequest>,
+	ValidatedJson(request): ValidatedJson<VerifyUserRequest>,
 ) -> ApiResult<Json<UserResponse>> {
 	let is_verified = verification_service.verify_code(&request.user_id.to_string(), &request.code);
 
@@ -116,16 +121,42 @@ async fn activate_user_route(
 		return Err(UsersApiError::InvalidVerificationCode(request.code.clone()))?;
 	}
 
-	let activated_user = users_repository
-		.activate_user(&request.user_id)
+	let verified_user = users_repository
+		.verify_user(&request.user_id)
 		.await
 		.map_err(|_| UsersApiError::UserNotFound(request.user_id.to_string()))?;
 
-	if let Err(error) = email_service.send_welcome_email(&activated_user.email) {
+	authorize_jwt(cookies, CurrentUser::from(verified_user.clone())).map_err(|_| UsersApiError::FailedToLoginUser())?;
+
+	if let Err(error) = email_service.send_welcome_email(&verified_user.email) {
 		log::error!("Failed to send welcome email: {error}");
 	}
 
-	Ok((StatusCode::OK, Json(UserResponse::from(activated_user))))
+	Ok((StatusCode::OK, Json(UserResponse::from(verified_user))))
+}
+
+async fn resend_verification_email_route(
+	State(UsersState {
+		users_repository,
+		email_service,
+		mut verification_service,
+	}): State<UsersState>,
+	ValidatedJson(request): ValidatedJson<ResendVerificationRequest>,
+) -> ApiResult<()> {
+	let user = users_repository
+		.find_user_by_id(&request.user_id)
+		.await
+		.map_err(|_| UsersApiError::UserNotFound(request.user_id.to_string()))?;
+
+	if !user.is_verified {
+		if let Err(error) = email_service
+			.send_verification_email(&user.email, &verification_service.generate_code(&user.id.to_string()))
+		{
+			log::error!("Failed to send verification email: {error}");
+		}
+	}
+
+	Ok((StatusCode::ACCEPTED, ()))
 }
 
 async fn login_user_route(

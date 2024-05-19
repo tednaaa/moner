@@ -16,15 +16,45 @@ export const useUserStore = defineStore('user', () => {
   const isLoading = ref(true)
   const toast = useToast()
 
-  function setCurrentUser(userResponse: UserResponse) {
+  function setLoggedUser(userResponse: UserResponse) {
     currentUser.value = userResponse
     isLoggedIn.value = true
   }
 
-  function registerUser(registerUserDto: RegisterUserDto) {
-    const { onFetchError } = useApiFetch("/users/register").post(registerUserDto)
+  function registerUser(registerUserDto: RegisterUserDto): Promise<boolean> {
+    return new Promise(resolve => {
+      const { onFetchError, onFetchResponse } = useApiFetch("/users/register").post(registerUserDto)
 
-    onFetchError(() => toast.add({ severity: 'error', summary: 'Failed to register', detail: 'User already exists', life: 5000 }))
+      onFetchError(() => {
+        toast.add({ severity: 'error', summary: 'Failed to register', detail: 'User already exists', life: 5000 })
+        resolve(false)
+      })
+
+      onFetchResponse(async (response) => {
+        const { id, email }: UserResponse = await response.json()
+        currentUser.value.id = id
+        currentUser.value.email = email
+        resolve(true)
+      })
+    })
+  }
+
+  function verifyUser(code: string) {
+    const { onFetchError, onFetchResponse } = useApiFetch(`/users/verify`).patch({ userId: currentUser.value.id, code })
+
+    onFetchError(() => toast.add({ severity: 'error', summary: 'Failed to verify', detail: 'Invalid verification code', life: 5000 }))
+    onFetchResponse(async (response) => {
+      const user: UserResponse = await response.json()
+      setLoggedUser(user)
+      await router.push({ name: routes.PROFILE, params: { username: user.username } })
+    })
+  }
+
+  function resendVerification() {
+    const { onFetchError, onFetchResponse } = useApiFetch(`/users/resend-verification`).post({ userId: currentUser.value.id })
+
+    onFetchError(() => toast.add({ severity: 'error', summary: 'Failed to resend verification', life: 5000 }))
+    onFetchResponse(() => toast.add({ severity: 'success', summary: 'Verification email sent', detail: 'Check your email', life: 5000 }))
   }
 
   function loginUser(loginUserDto: LoginUserDto) {
@@ -34,7 +64,7 @@ export const useUserStore = defineStore('user', () => {
 
     onFetchResponse(async (response) => {
       const user: UserResponse = await response.json()
-      setCurrentUser(user)
+      setLoggedUser(user)
       await router.push({ name: routes.PROFILE, params: { username: user.username } })
     })
   }
@@ -45,7 +75,7 @@ export const useUserStore = defineStore('user', () => {
     onFetchFinally(() => isLoading.value = false)
     onFetchResponse(async (response) => {
       const user: UserResponse = await response.json()
-      setCurrentUser(user)
+      setLoggedUser(user)
     })
   }
 
@@ -56,7 +86,7 @@ export const useUserStore = defineStore('user', () => {
     await router.push({ name: routes.LOGIN })
   }
 
-  return { currentUser, isLoggedIn, isLoading, registerUser, loginUser, getCurrentUser, logoutUser }
+  return { currentUser, isLoggedIn, isLoading, registerUser, verifyUser, resendVerification, loginUser, getCurrentUser, logoutUser }
 })
 
 if (import.meta.hot) {
