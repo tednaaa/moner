@@ -1,5 +1,4 @@
 <script setup lang='ts'>
-import { ref } from 'vue';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { object } from 'zod';
@@ -7,7 +6,7 @@ import { object } from 'zod';
 import { passwordValidation, requiredString } from '@/shared/validation';
 import { routes } from '@/shared/routes';
 
-import AuthLayout, { type AuthLayoutStatus } from '@/layouts/auth-layout.vue'
+import AuthLayout from '@/layouts/auth-layout.vue'
 import OauthBox from '@/widgets/oauth-box.vue';
 
 import BaseInput from '@/shared/ui/base-input/base-input.vue';
@@ -17,25 +16,25 @@ import BaseLink from '@/shared/ui/base-link/base-link.vue';
 import BaseButton from '@/shared/ui/base-button/base-button.vue';
 import { useUserStore } from '@/entities/user/user.store';
 
-const status = ref<AuthLayoutStatus>('default')
+const userStore = useUserStore()
+
+const validationSchema = toTypedSchema(object({
+  login: requiredString,
+  password: passwordValidation,
+}));
 
 const { handleSubmit } = useForm({
-  validationSchema: toTypedSchema(
-    object({
-      login: requiredString,
-      password: passwordValidation,
-    }),
-  ),
+  validationSchema,
 });
 
-const { loginUser } = useUserStore()
-const onSubmit = handleSubmit((userCredentials) => {
-  loginUser(userCredentials)
+const handleLogin = handleSubmit((userCredentials) => {
+  userStore.loginUser(userCredentials)
 });
+
 </script>
 
 <template>
-  <AuthLayout @submit="onSubmit" :status="status" status-text="I see you">
+  <AuthLayout status-text="I see you" @submit="handleLogin">
     <h1 :class="$style.title">Log in via</h1>
     <OauthBox />
     <span :class="$style.divider">or</span>
@@ -45,7 +44,7 @@ const onSubmit = handleSubmit((userCredentials) => {
       <BasePassword name="password" label="Password"></BasePassword>
     </div>
     <BaseButton :class="$style.button">Log In</BaseButton>
-    <BaseLink :class="$style.forgotPasswordLink" :to="{ name: routes.RECOVER_PASSWORD }">Forgot password?</BaseLink>
+    <BaseLink :class="$style.forgotPasswordLink" :to="{ name: routes.RECOVER }">Forgot password?</BaseLink>
 
     <span :class="$style.signUpText">
       Need to create an account?

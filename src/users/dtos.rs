@@ -46,6 +46,29 @@ pub struct ResendVerificationRequest {
 
 #[derive(Debug, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
+pub struct ResetPasswordRequest {
+	#[validate(email(message = "Must be a valid email address"))]
+	pub email: String,
+}
+
+#[derive(Debug, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct VerifyPasswordRequest {
+	#[validate(email(message = "Must be a valid email address"))]
+	pub email: String,
+	#[validate(length(min = 6, max = 6, message = "Code must be 6 characters"))]
+	pub code: String,
+}
+
+#[derive(Debug, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct ChangePasswordRequest {
+	#[validate(length(min = 6, max = 20, message = "Password must be between 3 and 20 characters"))]
+	pub new_password: String,
+}
+
+#[derive(Debug, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
 pub struct LoginUserRequest {
 	#[validate(length(min = 6, message = "Login must be at least 6 characters"))]
 	pub login: String,

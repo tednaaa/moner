@@ -8,7 +8,7 @@ const props = defineProps<{
   type: InputTypeHTMLAttribute
 }>()
 
-const { value, errorMessage } = useField(() => props.name);
+const { value, errorMessage } = useField(props.name, undefined, { validateOnValueUpdate: false, });
 </script>
 
 <template>
@@ -79,6 +79,8 @@ const { value, errorMessage } = useField(() => props.name);
   font-weight: 500;
   line-height: 17px;
   color: var(--color-error);
-  margin-top: 2px;
+  display: inline-block;
+  margin-top: 4px;
+  margin-left: 16px;
 }
 </style>

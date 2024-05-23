@@ -7,7 +7,7 @@ import InputOtp from 'primevue/inputotp';
 
 import { emailValidation, usernameValidation, passwordValidation } from '@/shared/validation';
 
-import AuthLayout, { type AuthLayoutStatus } from '@/layouts/auth-layout.vue'
+import AuthLayout from '@/layouts/auth-layout.vue'
 import { routes } from '@/shared/routes';
 import BaseInput from '@/shared/ui/base-input/base-input.vue';
 import BasePassword from '@/shared/ui/base-password/base-password.vue';
@@ -17,28 +17,32 @@ import { useUserStore } from '@/entities/user/user.store'
 import BaseButton from '@/shared/ui/base-button/base-button.vue';
 import OauthBox from '@/widgets/oauth-box.vue';
 
-const status = ref<AuthLayoutStatus>('default')
 const isRegistered = ref(false)
 const verificationCode = ref("")
 
+const userStore = useUserStore()
+
 const { handleSubmit } = useForm({
-  validationSchema: toTypedSchema(
-    object({
-      email: emailValidation,
-      username: usernameValidation,
-      password: passwordValidation,
-    }),
-  ),
+  validationSchema: toTypedSchema(object({
+    email: emailValidation,
+    username: usernameValidation,
+    password: passwordValidation,
+  })),
 });
 
-const userStore = useUserStore()
-const onSubmit = handleSubmit(async (userCredentials) => {
+const registerUser = handleSubmit(async (userCredentials) => {
   isRegistered.value = await userStore.registerUser(userCredentials)
 });
+
+function verify() {
+  if (verificationCode.value.length !== 6) return;
+
+  userStore.verifyUser(verificationCode.value)
+}
 </script>
 
 <template>
-  <AuthLayout @submit="onSubmit" :status="status" status-text="I see you">
+  <AuthLayout @submit="registerUser" status-text="I see you">
     <template v-if="isRegistered">
       <h1 :class="$style.title">Verify your account</h1>
       <span :class="$style.verificationDescription">
@@ -48,7 +52,7 @@ const onSubmit = handleSubmit(async (userCredentials) => {
       </span>
 
       <InputOtp :class="$style.verificationInput" v-model="verificationCode" :length="6" integer-only />
-      <BaseButton @click.prevent="userStore.verifyUser(verificationCode)" :class="$style.button">
+      <BaseButton @click.prevent="verify" :class="$style.button">
         Verify
       </BaseButton>
 
@@ -143,24 +147,7 @@ const onSubmit = handleSubmit(async (userCredentials) => {
 }
 
 .verificationInput {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
   margin-bottom: 40px;
-
-  input[data-pc-name="input"] {
-    color: #334155;
-    background: white;
-    padding: 0.5rem 0.75rem;
-    border: 1px solid #cbd5e1;
-    appearance: none;
-    border-radius: 6px;
-    outline-color: transparent;
-    text-align: center;
-    box-shadow: 0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(18, 18, 23, 0.05);
-    width: 2.5rem;
-    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s, outline-color 0.2s;
-  }
 }
 
 .resendContainer {

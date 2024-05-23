@@ -33,19 +33,9 @@ export const router = createRouter({
           component: () => import('./auth/sign-up-page.vue'),
         },
         {
-          path: 'password',
-          children: [
-            {
-              path: 'recover',
-              name: routes.RECOVER_PASSWORD,
-              component: () => import('./auth/password/recover-password-page.vue'),
-            },
-            {
-              path: 'edit',
-              name: routes.EDIT_PASSWORD,
-              component: () => import('./auth/password/edit-password-page.vue'),
-            }
-          ]
+          path: 'recover',
+          name: routes.RECOVER,
+          component: () => import('./auth/recover-page.vue'),
         },
       ],
     },

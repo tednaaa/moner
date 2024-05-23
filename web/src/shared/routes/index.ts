@@ -3,7 +3,6 @@ export const routes = {
   PROFILE: 'profile',
   LOGIN: 'login',
   SIGN_UP: 'sign-up',
-  RECOVER_PASSWORD: 'recover-password',
-  EDIT_PASSWORD: 'edit-password',
+  RECOVER: 'recover',
   PROJECT: 'project',
 }

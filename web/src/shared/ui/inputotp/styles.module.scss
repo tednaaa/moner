@@ -1,0 +1,22 @@
+.root {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.input {
+  color: #334155;
+  background: white;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  appearance: none;
+  border-radius: 6px;
+  outline-color: transparent;
+  text-align: center;
+  box-shadow: 0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(18, 18, 23, 0.05);
+  width: 2.5rem;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s, outline-color 0.2s;
+
+  &[aria-invalid='true'] {
+    border-color: #ef4444;
+  }
+}

@@ -86,7 +86,45 @@ export const useUserStore = defineStore('user', () => {
     await router.push({ name: routes.LOGIN })
   }
 
-  return { currentUser, isLoggedIn, isLoading, registerUser, verifyUser, resendVerification, loginUser, getCurrentUser, logoutUser }
+
+  function resetPassword(email: string): Promise<boolean> {
+    return new Promise(resolve => {
+      const { onFetchError, onFetchResponse } = useApiFetch("/users/password/reset").post({ email })
+
+      onFetchError(() => {
+        toast.add({ severity: 'error', summary: 'Failed to reset password', life: 5000 })
+        resolve(false)
+      })
+      onFetchResponse(() => {
+        toast.add({ severity: 'success', summary: 'Password reset email sent', detail: 'Check your email', life: 5000 })
+        resolve(true)
+      })
+    })
+  }
+
+  function verifyPassswordReset(email: string, code: string): Promise<boolean> {
+    return new Promise(resolve => {
+      const { onFetchError, onFetchResponse } = useApiFetch("/users/password/verify").post({ email, code })
+
+      onFetchError(() => {
+        toast.add({ severity: 'error', summary: 'Failed to verify', life: 5000 })
+        resolve(false)
+      })
+      onFetchResponse(() => resolve(true))
+    })
+  }
+
+  function changePassword(newPassword: string) {
+    const { onFetchError, onFetchResponse } = useApiFetch("/users/password/change").patch({ newPassword })
+
+    onFetchError(() => toast.add({ severity: 'error', summary: 'Failed to change password', life: 5000 }))
+    onFetchResponse(() => {
+      router.push({ name: routes.LOGIN })
+      toast.add({ severity: 'success', summary: 'Password changed', detail: 'You can now log in with your new password', life: 5000 })
+    })
+  }
+
+  return { currentUser, isLoggedIn, isLoading, registerUser, verifyUser, resendVerification, loginUser, getCurrentUser, logoutUser, resetPassword, verifyPassswordReset, changePassword }
 })
 
 if (import.meta.hot) {

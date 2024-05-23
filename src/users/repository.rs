@@ -102,6 +102,15 @@ impl UsersRepostory {
 		Ok(user)
 	}
 
+	pub async fn find_user_by_email(&self, email: &str) -> anyhow::Result<User> {
+		let user = sqlx::query_as!(User, "SELECT * FROM users WHERE email = $1", email)
+			.fetch_one(&*self.database.pool)
+			.await
+			.map_err(|error| anyhow!(error).context("Failed to find user by email"))?;
+
+		Ok(user)
+	}
+
 	pub async fn find_user_by_username(&self, username: &str) -> anyhow::Result<User> {
 		let user = sqlx::query_as!(User, "SELECT * FROM users WHERE username = $1", username)
 			.fetch_one(&*self.database.pool)
@@ -109,6 +118,15 @@ impl UsersRepostory {
 			.map_err(|error| anyhow!(error).context("Failed to find user by username"))?;
 
 		Ok(user)
+	}
+
+	pub async fn change_password(&self, user_id: &i64, new_password: &str) -> anyhow::Result<PgQueryResult> {
+		let query_result = sqlx::query!("UPDATE users SET password = $1 WHERE id = $2", new_password, user_id)
+			.execute(&*self.database.pool)
+			.await
+			.map_err(|error: sqlx::Error| anyhow!(error).context("Failed to change password"))?;
+
+		Ok(query_result)
 	}
 }
 
