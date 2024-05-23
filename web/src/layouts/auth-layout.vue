@@ -1,8 +1,5 @@
 <script setup lang='ts'>
-export type AuthLayoutStatus = 'default' | 'error'
-
 const props = defineProps<{
-  status: AuthLayoutStatus
   statusText: string
 }>()
 
@@ -14,7 +11,7 @@ const emit = defineEmits<{
 <template>
   <div :class="$style.wrapper">
     <div :class="$style.statusBar">
-      <span :class="[$style.statusText, $style[`status-${props.status}`]]">{{ props.statusText }}</span>
+      <span :class="$style.statusText">{{ props.statusText }}</span>
       <div :class="$style.statusImageWrapper">
         <img :class="$style.statusImage" src="@/assets/logo.svg" alt="logo">
       </div>

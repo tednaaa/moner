@@ -67,6 +67,19 @@ impl EmailService {
 		Ok(())
 	}
 
+	pub fn send_password_changed_email(&self, recipient_email: &str) -> Result<()> {
+		let email = self
+			.prepare_email(recipient_email)
+			.subject("Password Changed")
+			.body(password_changed_email_html())?;
+
+		self.mailer
+			.send(&email)
+			.map_err(|error| anyhow!("Failed to send password changed email: {}", error))?;
+
+		Ok(())
+	}
+
 	fn prepare_email(&self, recipient_email: &str) -> MessageBuilder {
 		Message::builder()
 			.from(self.sender_email.parse().unwrap())
@@ -96,6 +109,25 @@ fn verification_email_html(code: &str) -> String {
 	)
 }
 
+fn welcome_email_html() -> String {
+	r#"
+		<!doctype html>
+		<html lang="en">
+		<head>
+			<meta charset="UTF-8">
+			<meta name="viewport"
+			content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+			<meta http-equiv="X-UA-Compatible" content="ie=edge">
+			<title>Moner - Welcome</title>
+		</head>
+		<body>
+			<h1>Moner - Welcome</h1>
+		</body>
+		</html>
+		"#
+	.to_string()
+}
+
 fn password_reset_html(code: &str) -> String {
 	format!(
 		r#"
@@ -117,7 +149,7 @@ fn password_reset_html(code: &str) -> String {
 	)
 }
 
-fn welcome_email_html() -> String {
+fn password_changed_email_html() -> String {
 	r#"
 		<!doctype html>
 		<html lang="en">
@@ -126,10 +158,13 @@ fn welcome_email_html() -> String {
 			<meta name="viewport"
 			content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 			<meta http-equiv="X-UA-Compatible" content="ie=edge">
-			<title>Moner - Welcome</title>
+			<title>Moner - Password Changed</title>
 		</head>
 		<body>
-			<h1>Moner - Welcome</h1>
+			<h1>Moner - Password Changed</h1>
+			<p>Your password has been changed.</p>
+			<p>You can now log in with your new password.</p>
+			<p>If you did not change your password, please contact support.</p>
 		</body>
 		</html>
 		"#

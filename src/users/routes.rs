@@ -21,8 +21,8 @@ use crate::{
 use super::{
 	auth::{self, authorize_jwt, CurrentUser},
 	dtos::{
-		CreateUserRequest, LoginUserRequest, PublicUserResponse, ResendVerificationRequest, UserResponse,
-		VerifyUserRequest,
+		ChangePasswordRequest, CreateUserRequest, LoginUserRequest, PublicUserResponse, ResendVerificationRequest,
+		ResetPasswordRequest, UserResponse, VerifyPasswordRequest, VerifyUserRequest,
 	},
 	password,
 	repository::UsersRepostory,
@@ -57,12 +57,13 @@ pub fn init() -> Router<UsersState> {
 	Router::new()
 		.route("/users/me", get(get_me_route))
 		.route("/users/delete", delete(delete_user_route))
-		.route("/users/password/reset", post(reset_password_route))
-		.route("/users/password/change", patch(change_password_route))
+		.route("/users/password/change", patch(password_change_route))
 		.route_layer(middleware::from_fn(auth::middleware))
 		.route("/users/register", post(register_user_route))
 		.route("/users/verify", patch(verify_user_route))
-		.route("/users/resend-verification", post(resend_verification_email_route))
+		.route("/users/resend-verification", post(resend_verification_route))
+		.route("/users/password/reset", post(password_reset_route))
+		.route("/users/password/verify", post(password_verify_route))
 		.route("/users/login", post(login_user_route))
 		.route("/users/logout", get(logout_user_route))
 		.route("/users/:username", get(get_user_route))
@@ -135,7 +136,7 @@ async fn verify_user_route(
 	Ok((StatusCode::OK, Json(UserResponse::from(verified_user))))
 }
 
-async fn resend_verification_email_route(
+async fn resend_verification_route(
 	State(UsersState {
 		users_repository,
 		email_service,
@@ -242,29 +243,90 @@ async fn delete_user_route(
 	Ok((StatusCode::OK, ()))
 }
 
-async fn reset_password_route(
-	Extension(current_user): Extension<CurrentUser>,
+async fn password_reset_route(
 	State(UsersState {
 		users_repository,
 		email_service,
 		mut verification_service,
 	}): State<UsersState>,
+	ValidatedJson(request): ValidatedJson<ResetPasswordRequest>,
 ) -> ApiResult<()> {
 	let user = users_repository
-		.find_user_by_id(&current_user.user_id)
+		.find_user_by_email(&request.email)
 		.await
-		.map_err(|_| UsersApiError::UserNotFound(current_user.user_id.to_string()))?;
+		.map_err(|_| UsersApiError::UserNotFound(request.email.to_string()))?;
 
 	if let Err(error) =
 		email_service.send_password_reset_email(&user.email, &verification_service.generate_code(&user.id.to_string()))
 	{
-		log::error!("Failed to send verification email: {error}");
+		log::error!("Failed to send password reset email: {error}");
 	}
 
 	Ok((StatusCode::ACCEPTED, ()))
 }
 
-async fn change_password_route() {}
+async fn password_verify_route(
+	cookies: Cookies,
+	State(UsersState {
+		users_repository,
+		mut verification_service,
+		..
+	}): State<UsersState>,
+	ValidatedJson(request): ValidatedJson<VerifyPasswordRequest>,
+) -> ApiResult<Json<UserResponse>> {
+	let user = users_repository
+		.find_user_by_email(&request.email)
+		.await
+		.map_err(|_| UsersApiError::UserNotFound(request.email.to_string()))?;
+
+	if !user.is_verified {
+		return Err(UsersApiError::UserNotVerified(request.email.to_string()))?;
+	}
+
+	let is_verified = verification_service.verify_code(&user.id.to_string(), &request.code);
+	if !is_verified {
+		return Err(UsersApiError::InvalidVerificationCode(request.code))?;
+	}
+
+	authorize_jwt(cookies, CurrentUser::from(user.clone())).map_err(|_| UsersApiError::FailedToLoginUser())?;
+
+	Ok((StatusCode::OK, Json(UserResponse::from(user))))
+}
+
+async fn password_change_route(
+	Extension(current_user): Extension<CurrentUser>,
+	State(UsersState {
+		users_repository,
+		email_service,
+		..
+	}): State<UsersState>,
+	ValidatedJson(request): ValidatedJson<ChangePasswordRequest>,
+) -> ApiResult<()> {
+	let password_hash = password::hash(request.new_password.clone())
+		.await
+		.map_err(|_| UsersApiError::FailedToChangePassword())?;
+
+	let user = users_repository
+		.find_user_by_id(&current_user.user_id)
+		.await
+		.map_err(|_| UsersApiError::UserNotFound(current_user.user_id.to_string()))?;
+
+	if !user.is_verified {
+		return Err(UsersApiError::UserNotVerified(current_user.user_id.to_string()))?;
+	}
+
+	users_repository
+		.change_password(&current_user.user_id, &password_hash)
+		.await
+		.map_err(|_| UsersApiError::UserNotFound(current_user.user_id.to_string()))?;
+
+	if let Err(error) = email_service.send_password_changed_email(&current_user.email) {
+		log::error!("Failed to send password changed email: {error}");
+	}
+
+	Ok((StatusCode::OK, ()))
+}
+
 async fn oauth_callback_route() {}
 async fn oauth_login_route() {}
 
@@ -293,6 +355,9 @@ pub enum UsersApiError {
 
 	#[error("Failed to login user")]
 	FailedToLoginUser(),
+
+	#[error("Failed to change password")]
+	FailedToChangePassword(),
 }
 
 impl IntoResponse for UsersApiError {
@@ -306,6 +371,7 @@ impl IntoResponse for UsersApiError {
 			UsersApiError::UsernameTaken(_) => StatusCode::CONFLICT,
 			UsersApiError::FailedToCreateUser() => StatusCode::INTERNAL_SERVER_ERROR,
 			UsersApiError::FailedToLoginUser() => StatusCode::INTERNAL_SERVER_ERROR,
+			UsersApiError::FailedToChangePassword() => StatusCode::INTERNAL_SERVER_ERROR,
 		};
 
 		log::error!("{self:?}");
