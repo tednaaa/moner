@@ -13,11 +13,18 @@ const emit = defineEmits<{
     <div :class="$style.statusBar">
       <span :class="$style.statusText">{{ props.statusText }}</span>
       <div :class="$style.statusImageWrapper">
-        <img :class="$style.statusImage" src="@/assets/logo.svg" alt="logo">
+        <img
+          :class="$style.statusImage"
+          src="@/assets/logo.svg"
+          alt="logo"
+        >
       </div>
     </div>
-    <form :class="$style.form" @submit.prevent="emit('submit')">
-      <slot></slot>
+    <form
+      :class="$style.form"
+      @submit.prevent="emit('submit')"
+    >
+      <slot />
     </form>
   </div>
 </template>

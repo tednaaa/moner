@@ -74,43 +74,98 @@ const onSubmit = handleSubmit(async () => {
 </script>
 
 <template>
-  <AuthLayout status-text="I see you" @submit="onSubmit">
+  <AuthLayout
+    status-text="I see you"
+    @submit="onSubmit"
+  >
     <template v-if="FormStep.PrepareEmail === currentStep">
-      <h1 :class="$style.title">Reset Password</h1>
+      <h1 :class="$style.title">
+        Reset Password
+      </h1>
       <p :class="$style.description">
         Enter the email address you used to register and we'll send you the instruction
       </p>
 
-      <BaseInput :class="$style.input" name="email" label="Email" type="email"></BaseInput>
-      <BaseButton :class="$style.actionButton" type="submit">Reset Password</BaseButton>
-      <BaseLink :class="$style.goBackLink" :to="{ name: routes.LOGIN }">
-        <ArrowGoBackIcon :class="$style.goBackIcon"></ArrowGoBackIcon>
+      <BaseInput
+        :class="$style.input"
+        name="email"
+        label="Email"
+        type="email"
+      />
+      <BaseButton
+        :class="$style.actionButton"
+        type="submit"
+      >
+        Reset Password
+      </BaseButton>
+      <BaseLink
+        :class="$style.goBackLink"
+        :to="{ name: routes.LOGIN }"
+      >
+        <ArrowGoBackIcon :class="$style.goBackIcon" />
         Back to Log In
       </BaseLink>
     </template>
     <template v-if="FormStep.VerifyIdentity === currentStep">
-      <h1 :class="$style.title">Verify your identity</h1>
-      <p :class="$style.description">Enter the code we just sent you</p>
+      <h1 :class="$style.title">
+        Verify your identity
+      </h1>
+      <p :class="$style.description">
+        Enter the code we just sent you
+      </p>
 
-      <InputOtp v-model="verificationCode" :length="6" integer-only :invalid="Boolean(verificationError)" />
-      <BaseButton :class="$style.actionButton" type="submit">Verify</BaseButton>
-      <BaseLink :class="$style.goBackLink" :to="{ name: routes.LOGIN }">
-        <ArrowGoBackIcon :class="$style.goBackIcon"></ArrowGoBackIcon>
+      <InputOtp
+        v-model="verificationCode"
+        :length="6"
+        integer-only
+        :invalid="Boolean(verificationError)"
+      />
+      <BaseButton
+        :class="$style.actionButton"
+        type="submit"
+      >
+        Verify
+      </BaseButton>
+      <BaseLink
+        :class="$style.goBackLink"
+        :to="{ name: routes.LOGIN }"
+      >
+        <ArrowGoBackIcon :class="$style.goBackIcon" />
         Back to Log In
       </BaseLink>
     </template>
     <template v-if="FormStep.ChangePassword === currentStep">
-      <h1 :class="$style.title">Change Password</h1>
-      <p :class="$style.description">Create a new, strong password that you don't use for other websites</p>
+      <h1 :class="$style.title">
+        Change Password
+      </h1>
+      <p :class="$style.description">
+        Create a new, strong password that you don't use for other websites
+      </p>
 
       <div :class="$style.passwords">
-        <BasePassword :class="$style.input" name="newPassword" label="Password"></BasePassword>
-        <BasePassword :class="$style.input" name="repeatPassword" label="Repeat password"></BasePassword>
+        <BasePassword
+          :class="$style.input"
+          name="newPassword"
+          label="Password"
+        />
+        <BasePassword
+          :class="$style.input"
+          name="repeatPassword"
+          label="Repeat password"
+        />
       </div>
 
-      <BaseButton :class="$style.actionButton" type="submit">Change your password</BaseButton>
-      <BaseLink :class="$style.goBackLink" :to="{ name: routes.LOGIN }">
-        <ArrowGoBackIcon :class="$style.goBackIcon"></ArrowGoBackIcon>
+      <BaseButton
+        :class="$style.actionButton"
+        type="submit"
+      >
+        Change your password
+      </BaseButton>
+      <BaseLink
+        :class="$style.goBackLink"
+        :to="{ name: routes.LOGIN }"
+      >
+        <ArrowGoBackIcon :class="$style.goBackIcon" />
         Back to Log In
       </BaseLink>
     </template>

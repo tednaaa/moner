@@ -21,4 +21,8 @@ export interface PublicUserResponse {
   id: number
   email: string
   username: string
+  name: string
+  avatar: string
+  occupation: string
+  isFollowing: boolean
 }

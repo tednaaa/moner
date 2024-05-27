@@ -2,7 +2,7 @@
 
 <template>
   <div :class="$style.container">
-    <slot></slot>
+    <slot />
   </div>
 </template>
 

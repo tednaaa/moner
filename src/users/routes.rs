@@ -14,12 +14,13 @@ use tower_cookies::{Cookie, Cookies};
 use crate::{
 	app::{ApiErrorResponse, ApiResult},
 	database::Database,
+	follows::repository::FollowsRepository,
 	services::{email::EmailService, verification::VerificationService},
 	validation::ValidatedJson,
 };
 
 use super::{
-	auth::{self, authorize_jwt, CurrentUser},
+	auth::{self, authorize_jwt, verify_jwt, CurrentUser},
 	dtos::{
 		ChangePasswordRequest, CreateUserRequest, LoginUserRequest, PublicUserResponse, ResendVerificationRequest,
 		ResetPasswordRequest, UserResponse, VerifyPasswordRequest, VerifyUserRequest,
@@ -31,6 +32,7 @@ use super::{
 #[derive(Clone)]
 pub struct UsersState {
 	pub users_repository: UsersRepostory,
+	pub follows_repository: FollowsRepository,
 	pub email_service: EmailService,
 	pub verification_service: VerificationService,
 }
@@ -47,6 +49,7 @@ impl UsersState {
 
 		Self {
 			users_repository: UsersRepostory::new(database),
+			follows_repository: FollowsRepository::new(database),
 			email_service: EmailService::new(),
 			verification_service: VerificationService::new(),
 		}
@@ -66,20 +69,17 @@ pub fn init() -> Router<UsersState> {
 		.route("/users/password/verify", post(password_verify_route))
 		.route("/users/login", post(login_user_route))
 		.route("/users/logout", get(logout_user_route))
-		.route("/users/:username", get(get_user_route))
+		.route("/users/:username", get(get_public_user_route))
 		.route("/users/oauth/:provider/callback", get(oauth_callback_route))
 		.route("/users/oauth/:provider/login", get(oauth_login_route))
 }
 
 async fn register_user_route(
-	State(UsersState {
-		users_repository,
-		email_service,
-		mut verification_service,
-	}): State<UsersState>,
+	State(mut state): State<UsersState>,
 	ValidatedJson(request): ValidatedJson<CreateUserRequest>,
 ) -> ApiResult<Json<UserResponse>> {
-	users_repository
+	state
+		.users_repository
 		.delete_unverified_user(&request.email)
 		.await
 		.map_err(|_| UsersApiError::FailedToCreateUser())?;
@@ -88,7 +88,8 @@ async fn register_user_route(
 		.await
 		.map_err(|_| UsersApiError::FailedToCreateUser())?;
 
-	let created_user = users_repository
+	let created_user = state
+		.users_repository
 		.create_user(&request.email, &request.username, &password_hash)
 		.await
 		.map_err(|error| match error.to_string().to_lowercase() {
@@ -97,9 +98,9 @@ async fn register_user_route(
 			_ => UsersApiError::FailedToCreateUser(),
 		})?;
 
-	if let Err(error) = email_service.send_verification_email(
+	if let Err(error) = state.email_service.send_verification_email(
 		&request.email,
-		&verification_service.generate_code(&created_user.id.to_string()),
+		&state.verification_service.generate_code(&created_user.id.to_string()),
 	) {
 		log::error!("Failed to send verification email: {error}");
 	};
@@ -109,27 +110,26 @@ async fn register_user_route(
 
 async fn verify_user_route(
 	cookies: Cookies,
-	State(UsersState {
-		users_repository,
-		email_service,
-		mut verification_service,
-	}): State<UsersState>,
+	State(mut state): State<UsersState>,
 	ValidatedJson(request): ValidatedJson<VerifyUserRequest>,
 ) -> ApiResult<Json<UserResponse>> {
-	let is_verified = verification_service.verify_code(&request.user_id.to_string(), &request.code);
+	let is_verified = state
+		.verification_service
+		.verify_code(&request.user_id.to_string(), &request.code);
 
 	if !is_verified {
 		return Err(UsersApiError::InvalidVerificationCode(request.code.clone()))?;
 	}
 
-	let verified_user = users_repository
+	let verified_user = state
+		.users_repository
 		.verify_user(&request.user_id)
 		.await
 		.map_err(|_| UsersApiError::UserNotFound(request.user_id.to_string()))?;
 
 	authorize_jwt(cookies, CurrentUser::from(verified_user.clone())).map_err(|_| UsersApiError::FailedToLoginUser())?;
 
-	if let Err(error) = email_service.send_welcome_email(&verified_user.email) {
+	if let Err(error) = state.email_service.send_welcome_email(&verified_user.email) {
 		log::error!("Failed to send welcome email: {error}");
 	}
 
@@ -137,22 +137,20 @@ async fn verify_user_route(
 }
 
 async fn resend_verification_route(
-	State(UsersState {
-		users_repository,
-		email_service,
-		mut verification_service,
-	}): State<UsersState>,
+	State(mut state): State<UsersState>,
 	ValidatedJson(request): ValidatedJson<ResendVerificationRequest>,
 ) -> ApiResult<()> {
-	let user = users_repository
+	let user = state
+		.users_repository
 		.find_user_by_id(&request.user_id)
 		.await
 		.map_err(|_| UsersApiError::UserNotFound(request.user_id.to_string()))?;
 
 	if !user.is_verified {
-		if let Err(error) = email_service
-			.send_verification_email(&user.email, &verification_service.generate_code(&user.id.to_string()))
-		{
+		if let Err(error) = state.email_service.send_verification_email(
+			&user.email,
+			&state.verification_service.generate_code(&user.id.to_string()),
+		) {
 			log::error!("Failed to send verification email: {error}");
 		}
 	}
@@ -162,14 +160,11 @@ async fn resend_verification_route(
 
 async fn login_user_route(
 	cookies: Cookies,
-	State(UsersState {
-		users_repository,
-		email_service,
-		mut verification_service,
-	}): State<UsersState>,
+	State(mut state): State<UsersState>,
 	ValidatedJson(request): ValidatedJson<LoginUserRequest>,
 ) -> ApiResult<Json<UserResponse>> {
-	let user = users_repository
+	let user = state
+		.users_repository
 		.find_user_by_login(&request.login)
 		.await
 		.map_err(|_| UsersApiError::UserNotFound(request.login.clone()))?;
@@ -183,9 +178,10 @@ async fn login_user_route(
 	}
 
 	if !user.is_verified {
-		if let Err(error) = email_service
-			.send_verification_email(&user.email, &verification_service.generate_code(&user.id.to_string()))
-		{
+		if let Err(error) = state.email_service.send_verification_email(
+			&user.email,
+			&state.verification_service.generate_code(&user.id.to_string()),
+		) {
 			log::error!("Failed to send verification email: {error}");
 		}
 
@@ -219,16 +215,33 @@ async fn get_me_route(
 	Ok((StatusCode::OK, Json(UserResponse::from(user))))
 }
 
-async fn get_user_route(
+async fn get_public_user_route(
+	cookies: Cookies,
 	Path(username): Path<String>,
-	State(UsersState { users_repository, .. }): State<UsersState>,
+	State(state): State<UsersState>,
 ) -> ApiResult<Json<PublicUserResponse>> {
-	let user = users_repository
+	let user = state
+		.users_repository
 		.find_user_by_username(&username)
 		.await
-		.map_err(|_| UsersApiError::UserNotFound(username))?;
+		.map_err(|_| UsersApiError::UserNotFound(username.clone()))?;
 
-	Ok((StatusCode::OK, Json(PublicUserResponse::from(user))))
+	let access_token = cookies
+		.get("access_token")
+		.map(|cookie| cookie.value().to_string())
+		.unwrap_or(String::from(""));
+
+	let mut is_followed = false;
+
+	if let Ok(payload) = verify_jwt(&access_token) {
+		is_followed = state
+			.follows_repository
+			.is_following(&payload.claims.user.user_id, &user.id)
+			.await
+			.map_err(|_| UsersApiError::UserNotFound(username))?;
+	}
+
+	Ok((StatusCode::OK, Json(PublicUserResponse::from_user(user, is_followed))))
 }
 
 async fn delete_user_route(
@@ -244,21 +257,19 @@ async fn delete_user_route(
 }
 
 async fn password_reset_route(
-	State(UsersState {
-		users_repository,
-		email_service,
-		mut verification_service,
-	}): State<UsersState>,
+	State(mut state): State<UsersState>,
 	ValidatedJson(request): ValidatedJson<ResetPasswordRequest>,
 ) -> ApiResult<()> {
-	let user = users_repository
+	let user = state
+		.users_repository
 		.find_user_by_email(&request.email)
 		.await
 		.map_err(|_| UsersApiError::UserNotFound(request.email.to_string()))?;
 
-	if let Err(error) =
-		email_service.send_password_reset_email(&user.email, &verification_service.generate_code(&user.id.to_string()))
-	{
+	if let Err(error) = state.email_service.send_password_reset_email(
+		&user.email,
+		&state.verification_service.generate_code(&user.id.to_string()),
+	) {
 		log::error!("Failed to send password reset email: {error}");
 	}
 

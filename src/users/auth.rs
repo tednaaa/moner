@@ -168,7 +168,7 @@ fn create_jwt(user_id: &i64, email: &str, username: &str) -> Result<String, Erro
 	.map_err(|error| anyhow!(error).context("Failed to encode JWT"))
 }
 
-fn verify_jwt(token: &str) -> Result<TokenData<Claims>, Error> {
+pub fn verify_jwt(token: &str) -> Result<TokenData<Claims>, Error> {
 	decode(
 		token,
 		&DecodingKey::from_secret(SETTINGS.auth.jwt_secret.as_bytes()),

@@ -14,9 +14,16 @@ const oAuthList = [
 
 <template>
   <ul :class="$style.OAuthList">
-    <li :class="$style.OAuthItem" v-for="oAuth, index in oAuthList" :key="index">
-      <a :class="$style.OAuthLink" :href="`${API_URL}/oauth/${oAuth.provider}`">
-        <component :is="oAuth.iconComponent"></component>
+    <li
+      v-for="oAuth, index in oAuthList"
+      :key="index"
+      :class="$style.OAuthItem"
+    >
+      <a
+        :class="$style.OAuthLink"
+        :href="`${API_URL}/oauth/${oAuth.provider}`"
+      >
+        <component :is="oAuth.iconComponent" />
       </a>
     </li>
   </ul>

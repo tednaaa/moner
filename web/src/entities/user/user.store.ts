@@ -7,6 +7,7 @@ import { useApiFetch } from '@/shared/api/api'
 import { router } from '@/pages/router'
 import { routes } from '@/shared/routes'
 import type { LoginUserDto, RegisterUserDto, UserResponse } from './user.types'
+import { AUTH_SESSION_REFERRER_KEY } from '@/shared/config'
 
 const getUserInitialState = (): Partial<UserResponse> => ({})
 
@@ -46,7 +47,7 @@ export const useUserStore = defineStore('user', () => {
     onFetchResponse(async (response) => {
       const user: UserResponse = await response.json()
       setLoggedUser(user)
-      await router.push({ name: routes.PROFILE, params: { username: user.username } })
+      router.push({ name: routes.PROFILE, params: { username: user.username } })
     })
   }
 
@@ -65,7 +66,15 @@ export const useUserStore = defineStore('user', () => {
     onFetchResponse(async (response) => {
       const user: UserResponse = await response.json()
       setLoggedUser(user)
-      await router.push({ name: routes.PROFILE, params: { username: user.username } })
+
+      const referrerFullPath = sessionStorage.getItem(AUTH_SESSION_REFERRER_KEY)
+      sessionStorage.removeItem(AUTH_SESSION_REFERRER_KEY)
+
+      if (referrerFullPath) {
+        router.push(referrerFullPath)
+      } else {
+        router.push({ name: routes.PROFILE, params: { username: user.username } })
+      }
     })
   }
 
@@ -83,7 +92,6 @@ export const useUserStore = defineStore('user', () => {
     await useApiFetch("/users/logout").get()
     currentUser.value = getUserInitialState()
     isLoggedIn.value = false
-    await router.push({ name: routes.LOGIN })
   }
 
 

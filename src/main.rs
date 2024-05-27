@@ -5,8 +5,10 @@ mod app;
 mod database;
 mod services;
 mod settings;
-mod users;
 mod validation;
+
+mod follows;
+mod users;
 
 use settings::SETTINGS;
 

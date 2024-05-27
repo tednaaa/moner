@@ -12,17 +12,20 @@ use tower_http::cors::CorsLayer;
 use tower_http::propagate_header::PropagateHeaderLayer;
 
 use crate::database::{self};
+use crate::follows::routes::{FollowApiError, FollowsState};
 use crate::settings::SETTINGS;
-use crate::users;
 use crate::users::routes::{UsersApiError, UsersState};
+use crate::{follows, users};
 
 pub async fn create_app() -> IntoMakeService<Router> {
 	let database = Arc::new(database::Database::init().await.unwrap());
 
 	let users_state = UsersState::new(&database);
+	let follows_state = FollowsState::new(&database);
 
 	let router = Router::new()
 		.merge(users::routes::init().with_state(users_state))
+		.merge(follows::routes::init().with_state(follows_state))
 		// .merge(Router::new().nest(
 		// 	"/v1",
 		// 	// All public v1 routes will be nested here.
@@ -56,12 +59,16 @@ pub async fn create_app() -> IntoMakeService<Router> {
 pub enum ApiError {
 	#[error("{0}")]
 	UsersApiError(#[from] UsersApiError),
+
+	#[error("{0}")]
+	FollowApiError(#[from] FollowApiError),
 }
 
 impl IntoResponse for ApiError {
 	fn into_response(self) -> Response {
 		match self {
 			ApiError::UsersApiError(error) => error.into_response(),
+			ApiError::FollowApiError(error) => error.into_response(),
 		}
 	}
 }

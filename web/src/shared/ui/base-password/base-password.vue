@@ -18,11 +18,19 @@ function toggleMask() {
 </script>
 
 <template>
-  <BaseInput :name="props.name" :label="props.label" :type="show ? 'text' : 'password'">
+  <BaseInput
+    :name="props.name"
+    :label="props.label"
+    :type="show ? 'text' : 'password'"
+  >
     <template #right>
-      <button :class="[$style.eyeButton, show || $style.eyeButtonHidden]" @click="toggleMask" aria-label="Toggle"
-        type="button">
-        <EyeIcon :class="$style.eyeIcon"></EyeIcon>
+      <button
+        :class="[$style.eyeButton, show || $style.eyeButtonHidden]"
+        aria-label="Toggle"
+        type="button"
+        @click="toggleMask"
+      >
+        <EyeIcon :class="$style.eyeIcon" />
       </button>
     </template>
   </BaseInput>
