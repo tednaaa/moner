@@ -20,8 +20,10 @@ import mockImage from '@/assets/mock.jpg';
 import type { PublicUserResponse } from '@/entities/user/user.types';
 import { useApiFetch } from '@/shared/api/api';
 import { routes } from '@/shared/routes';
+import { useFollowsStore } from '@/entities/follows/follows.store';
 
 const userStore = useUserStore()
+const followsStore = useFollowsStore()
 const route = useRoute()
 
 const isCurrentUserProfile = computed(() => route.params.username === userStore.currentUser.username)
@@ -31,7 +33,13 @@ const initialSkills = ref(skills.value);
 
 const isEditMode = ref(false)
 
-const { data: visitedUser } = useApiFetch(`/users/${route.params.username}`).json<PublicUserResponse>()
+const { data: visitedUser, onFetchResponse } = useApiFetch(`/users/${route.params.username}`).json<PublicUserResponse>()
+const isFollowing = ref(false)
+onFetchResponse(() => {
+  if (!visitedUser.value) return
+
+  isFollowing.value = visitedUser.value.isFollowing
+})
 
 function updateProfile() {
   updateSkills()
@@ -59,6 +67,19 @@ function disableEditMode() {
   isEditMode.value = false
 }
 
+async function followUser() {
+  if (!visitedUser.value) return
+
+  const isFollowed = await followsStore.followUser(visitedUser.value.id)
+  if (isFollowed) isFollowing.value = true
+}
+
+async function unfollowUser() {
+  if (!visitedUser.value) return
+
+  const isUnfollowed = await followsStore.unfollowUser(visitedUser.value.id)
+  if (isUnfollowed) isFollowing.value = false
+}
 
 const experience: ExperienceItemInterface[] = [{
   company: {
@@ -90,26 +111,56 @@ const experience: ExperienceItemInterface[] = [{
 </script>
 
 <template>
-  <div v-if="visitedUser" :class="$style.wrapper">
-    <MainHeader :class="$style.header" :user="{ avatarUrl: mockImage }" :is-current-user-profile="isCurrentUserProfile"
-      @logout="userStore.logoutUser" />
+  <div
+    v-if="visitedUser"
+    :class="$style.wrapper"
+  >
+    <MainHeader
+      :class="$style.header"
+      :user="{ avatarUrl: mockImage }"
+      :is-current-user-profile="isCurrentUserProfile"
+      @logout="userStore.logoutUser"
+    />
     <BaseContainer :class="$style.container">
-      <ProfileSidebar :class="$style.sidebar" :avatar-url="mockImage" occupation="Developer" name="Andranik"
-        :username="visitedUser.username" :is-edit-mode="isEditMode" :is-current-user-profile="isCurrentUserProfile"
-        @edit-button-click="enableEditMode" @save-button-click="updateProfile" @cancel-button-click="cancelEdit" />
+      <ProfileSidebar
+        :class="$style.sidebar"
+        :user-id="visitedUser.id"
+        :avatar-url="mockImage"
+        occupation="Developer"
+        name="Andranik"
+        :username="visitedUser.username"
+        :is-following="userStore.isLoggedIn && isFollowing"
+        :is-edit-mode="isEditMode"
+        :is-current-user-profile="isCurrentUserProfile"
+        @edit-button-click="enableEditMode"
+        @save-button-click="updateProfile"
+        @cancel-button-click="cancelEdit"
+        @follow-button-click="followUser"
+        @unfollow-button-click="unfollowUser"
+      />
       <div :class="$style.mainContainer">
-        <TabView :class="$style.tabView" :active-index="1">
+        <TabView
+          :class="$style.tabView"
+          :active-index="1"
+        >
           <TabPanel>
             <template #header>
               <span :class="$style.tabPanelHeader">
                 <span>Projects</span>
-                <FolderIcon></FolderIcon>
+                <FolderIcon />
               </span>
             </template>
             <div :class="$style.projects">
-              <RouterLink :class="$style.project" v-for="i in 25" :key="i"
-                :to="{ name: routes.PROJECT, params: { projectId: i } }">
-                <img :src="mockImage" alt="">
+              <RouterLink
+                v-for="i in 25"
+                :key="i"
+                :class="$style.project"
+                :to="{ name: routes.PROJECT, params: { projectId: i } }"
+              >
+                <img
+                  :src="mockImage"
+                  alt=""
+                >
               </RouterLink>
             </div>
           </TabPanel>
@@ -117,22 +168,42 @@ const experience: ExperienceItemInterface[] = [{
             <template #header>
               <span :class="$style.tabPanelHeader">
                 <span>CV</span>
-                <CvIcon></CvIcon>
+                <CvIcon />
               </span>
             </template>
             <div :class="$style.contentWrapper">
               <div :class="$style.content">
-                <h2 :class="$style.contentTitle">Skills</h2>
+                <h2 :class="$style.contentTitle">
+                  Skills
+                </h2>
 
                 <div :class="$style.skills">
-                  <Chips v-if="isEditMode" placeholder="🐙  Tell me about your skills" :max="30" v-model="skills" />
-                  <Chip v-else v-for="skill in skills" :key="skill" :class="$style.skill">{{ skill }}</Chip>
+                  <Chips
+                    v-if="isEditMode"
+                    v-model="skills"
+                    placeholder="🐙  Tell me about your skills"
+                    :max="30"
+                  />
+                  <Chip
+                    v-for="skill in skills"
+                    v-else
+                    :key="skill"
+                    :class="$style.skill"
+                  >
+                    {{ skill }}
+                  </Chip>
                 </div>
               </div>
               <div :class="$style.content">
-                <h2 :class="$style.contentTitle">Experience</h2>
+                <h2 :class="$style.contentTitle">
+                  Experience
+                </h2>
                 <ul :class="$style.experience">
-                  <li :class="$style.experienceItem" v-for="item in experience" :key="item.company.name">
+                  <li
+                    v-for="item in experience"
+                    :key="item.company.name"
+                    :class="$style.experienceItem"
+                  >
                     <ExperienceItem :item="item" />
                   </li>
                 </ul>
@@ -143,7 +214,9 @@ const experience: ExperienceItemInterface[] = [{
       </div>
     </BaseContainer>
   </div>
-  <div v-else>User not found!</div>
+  <div v-else>
+    User not found!
+  </div>
 </template>
 
 <style module lang='scss'>

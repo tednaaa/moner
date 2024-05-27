@@ -22,7 +22,11 @@ const props = defineProps<{
 <template>
   <div :class="$style.experienceItem">
     <div :class="$style.experienceItemHeader">
-      <img :class="$style.experienceItemLogo" :src="props.item.company.logoUrl" alt="">
+      <img
+        :class="$style.experienceItemLogo"
+        :src="props.item.company.logoUrl"
+        alt=""
+      >
       <div :class="$style.experienceItemInfo">
         <span :class="$style.experienceItemOccupation">{{ props.item.occupation }}</span>
         <span :class="$style.experienceItemDate">{{ props.item.date }}</span>
@@ -38,7 +42,9 @@ const props = defineProps<{
         </span>
       </div>
     </div>
-    <p :class="$style.experienceItemDescription">{{ props.item.description }}</p>
+    <p :class="$style.experienceItemDescription">
+      {{ props.item.description }}
+    </p>
   </div>
 </template>
 

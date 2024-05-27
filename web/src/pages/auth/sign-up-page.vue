@@ -42,36 +42,69 @@ function verify() {
 </script>
 
 <template>
-  <AuthLayout @submit="registerUser" status-text="I see you">
+  <AuthLayout
+    status-text="I see you"
+    @submit="registerUser"
+  >
     <template v-if="isRegistered">
-      <h1 :class="$style.title">Verify your account</h1>
+      <h1 :class="$style.title">
+        Verify your account
+      </h1>
       <span :class="$style.verificationDescription">
         We sent to an email
         <span :class="$style.verificationEmail">{{ userStore.currentUser.email }}</span> <br>
         verification code, please enter it below
       </span>
 
-      <InputOtp :class="$style.verificationInput" v-model="verificationCode" :length="6" integer-only />
-      <BaseButton @click.prevent="verify" :class="$style.button">
+      <InputOtp
+        v-model="verificationCode"
+        :class="$style.verificationInput"
+        :length="6"
+        integer-only
+      />
+      <BaseButton
+        :class="$style.button"
+        @click.prevent="verify"
+      >
         Verify
       </BaseButton>
 
       <div :class="$style.resendContainer">
         <span>Didn't receive the code?</span>
-        <button @click.prevent="userStore.resendVerification" :class="$style.resendButton">Resend</button>
+        <button
+          :class="$style.resendButton"
+          @click.prevent="userStore.resendVerification"
+        >
+          Resend
+        </button>
       </div>
     </template>
     <template v-else>
-      <h1 :class="$style.title">Sign Up via</h1>
+      <h1 :class="$style.title">
+        Sign Up via
+      </h1>
       <OauthBox />
       <span :class="$style.divider">or</span>
 
       <div :class="$style.inputGroup">
-        <BaseInput name="email" label="Email" type="email"></BaseInput>
-        <BaseInput name="username" label="Username" type="text"></BaseInput>
-        <BasePassword name="password" label="Password"></BasePassword>
+        <BaseInput
+          name="email"
+          label="Email"
+          type="email"
+        />
+        <BaseInput
+          name="username"
+          label="Username"
+          type="text"
+        />
+        <BasePassword
+          name="password"
+          label="Password"
+        />
       </div>
-      <BaseButton :class="$style.button">Register</BaseButton>
+      <BaseButton :class="$style.button">
+        Register
+      </BaseButton>
 
       <span :class="$style.signUpText">
         Already have an account?

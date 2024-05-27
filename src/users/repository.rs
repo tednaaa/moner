@@ -7,7 +7,7 @@ use sqlx::postgres::PgQueryResult;
 
 use crate::database::Database;
 
-use super::dtos::{PublicUserResponse, UserResponse};
+use super::dtos::UserResponse;
 
 #[derive(Clone)]
 pub struct UsersRepostory {
@@ -149,15 +149,6 @@ impl From<User> for UserResponse {
 			username: user.username,
 			created_at: user.created_at,
 			updated_at: user.updated_at,
-		}
-	}
-}
-
-impl From<User> for PublicUserResponse {
-	fn from(user: User) -> Self {
-		Self {
-			email: user.email,
-			username: user.username,
 		}
 	}
 }

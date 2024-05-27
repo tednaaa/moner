@@ -23,14 +23,14 @@ describe('BaseInput.vue', () => {
     const errorMessage = 'test error message'
     const TestInput = defineComponent({
       components: { BaseInput },
-      template: `<BaseInput></BaseInput>`,
       setup() {
         useForm({
           validationSchema: object({
             [name]: string().min(10),
           }),
         });
-      }
+      },
+      template: `<BaseInput></BaseInput>`
     })
     const wrapper = mount(TestInput, {
       props: { name, label: 'Test', type: 'text' }

@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 import { routes } from '@/shared/routes';
 
 import BaseContainer from '@/shared/ui/base-container/base-container.vue';
@@ -11,6 +11,7 @@ import type { MenuItem } from 'primevue/menuitem';
 import { computed, ref } from 'vue';
 import { PrimeIcons } from 'primevue/api'
 import { useUserStore } from '@/entities/user/user.store';
+import { AUTH_SESSION_REFERRER_KEY } from '@/shared/config';
 
 const props = defineProps<{
   user: {
@@ -22,6 +23,9 @@ const emit = defineEmits<{
   logout: []
 }>()
 
+const userStore = useUserStore()
+const router = useRouter()
+
 const menuItems = computed<MenuItem[]>(() => ([{ icon: PrimeIcons.SIGN_OUT, label: "Logout", command: () => emit('logout') }]))
 const menu = ref()
 
@@ -29,33 +33,68 @@ function toggleMenu(event: MouseEvent) {
   menu.value.toggle(event)
 }
 
-const { isLoggedIn } = useUserStore()
+function redirectToLogin() {
+  sessionStorage.setItem(AUTH_SESSION_REFERRER_KEY, router.currentRoute.value.fullPath)
+  router.push({ name: routes.LOGIN })
+}
+
 </script>
 
 <template>
   <header :class="$style.header">
     <BaseContainer :class="$style.container">
-      <RouterLink :class="$style.logo" :to="{ name: routes.PROFILE }">moner</RouterLink>
+      <RouterLink
+        :class="$style.logo"
+        :to="{ name: routes.PROFILE }"
+      >
+        moner
+      </RouterLink>
 
       <div :class="$style.rightSide">
         <label :class="$style.search">
-          <SearchIcon :class="$style.searchIcon"></SearchIcon>
-          <input :class="$style.searchInput" name="search" placeholder="Search..." type="text" />
+          <SearchIcon :class="$style.searchIcon" />
+          <input
+            :class="$style.searchInput"
+            name="search"
+            placeholder="Search..."
+            type="text"
+          >
         </label>
 
-        <template v-if="isLoggedIn">
+        <template v-if="userStore.isLoggedIn">
           <button :class="$style.messagesButton">
-            <EnvelopeIcon></EnvelopeIcon>
+            <EnvelopeIcon />
           </button>
           <button :class="$style.notificationsButton">
-            <BellIcon></BellIcon>
+            <BellIcon />
           </button>
-          <button :class="$style.userButton" @click="toggleMenu" aria-haspopup="true" aria-controls="overlay_menu">
-            <img :class="$style.userAvatar" :src="props.user.avatarUrl" alt="">
+          <button
+            :class="$style.userButton"
+            aria-haspopup="true"
+            aria-controls="overlay_menu"
+            @click="toggleMenu"
+          >
+            <img
+              :class="$style.userAvatar"
+              :src="props.user.avatarUrl"
+              alt=""
+            >
           </button>
-          <Menu :class="$style.menu" id="overlay_menu" ref="menu" :model="menuItems" :popup="true" />
+          <Menu
+            id="overlay_menu"
+            ref="menu"
+            :class="$style.menu"
+            :model="menuItems"
+            :popup="true"
+          />
         </template>
-        <RouterLink v-else :class="$style.loginButton" :to="{ name: routes.LOGIN }">Log In</RouterLink>
+        <button
+          v-else
+          :class="$style.loginButton"
+          @click="redirectToLogin"
+        >
+          Log In
+        </button>
       </div>
     </BaseContainer>
   </header>

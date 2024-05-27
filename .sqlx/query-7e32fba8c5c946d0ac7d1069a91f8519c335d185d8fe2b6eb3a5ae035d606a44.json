@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n\t\t\tSELECT EXISTS (\n\t\t\t\tSELECT 1\n\t\t\t\tFROM follows\n\t\t\t\tWHERE follower_id = $1 AND followed_id = $2\n\t\t\t) AS is_followed\n\t\t\t",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "is_followed",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "7e32fba8c5c946d0ac7d1069a91f8519c335d185d8fe2b6eb3a5ae035d606a44"
+}

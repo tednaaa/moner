@@ -14,13 +14,21 @@ const { value, errorMessage } = useField(props.name, undefined, { validateOnValu
 <template>
   <div :class="$style.wrapper">
     <label :class="$style.inputWrapper">
-      <slot name="left"></slot>
-      <input :class="$style.input" :type="props.type" v-model="value" />
+      <slot name="left" />
+      <input
+        v-model="value"
+        :class="$style.input"
+        :type="props.type"
+      >
       <span :class="[$style.label, value && $style.labelActive]">{{ props.label }}</span>
 
-      <slot name="right"></slot>
+      <slot name="right" />
     </label>
-    <span v-if="errorMessage" :class="$style.errorMessage" :aria-errormessage="errorMessage">{{ errorMessage }}</span>
+    <span
+      v-if="errorMessage"
+      :class="$style.errorMessage"
+      :aria-errormessage="errorMessage"
+    >{{ errorMessage }}</span>
   </div>
 </template>
 

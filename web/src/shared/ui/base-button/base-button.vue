@@ -12,10 +12,18 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <button :class="[$style.button, isLoading && $style.buttonLoading]" :type="props.type"
-    @click="event => emit('click', event)">
-    <BaseSpinner :class="$style.spinner" :size="35" big-path-color="white" small-path-color="#13d7bd" />
-    <slot></slot>
+  <button
+    :class="[$style.button, props.isLoading && $style.buttonLoading]"
+    :type="props.type"
+    @click="event => emit('click', event)"
+  >
+    <BaseSpinner
+      :class="$style.spinner"
+      :size="35"
+      big-path-color="white"
+      small-path-color="#13d7bd"
+    />
+    <slot />
   </button>
 </template>
 

@@ -2,6 +2,8 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
+use super::repository::User;
+
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UserResponse {
@@ -13,9 +15,23 @@ pub struct UserResponse {
 }
 
 #[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PublicUserResponse {
+	pub id: i64,
 	pub email: String,
 	pub username: String,
+	pub is_following: bool,
+}
+
+impl PublicUserResponse {
+	pub fn from_user(user: User, is_following: bool) -> Self {
+		Self {
+			id: user.id,
+			email: user.email,
+			username: user.username,
+			is_following,
+		}
+	}
 }
 
 #[derive(Debug, Deserialize, Validate)]

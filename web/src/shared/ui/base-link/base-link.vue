@@ -5,8 +5,11 @@ const props = defineProps<RouterLinkProps>()
 </script>
 
 <template>
-  <RouterLink :class="$style.link" v-bind="props">
-    <slot></slot>
+  <RouterLink
+    :class="$style.link"
+    v-bind="props"
+  >
+    <slot />
   </RouterLink>
 </template>
 

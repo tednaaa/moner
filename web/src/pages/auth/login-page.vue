@@ -34,17 +34,36 @@ const handleLogin = handleSubmit((userCredentials) => {
 </script>
 
 <template>
-  <AuthLayout status-text="I see you" @submit="handleLogin">
-    <h1 :class="$style.title">Log in via</h1>
+  <AuthLayout
+    status-text="I see you"
+    @submit="handleLogin"
+  >
+    <h1 :class="$style.title">
+      Log in via
+    </h1>
     <OauthBox />
     <span :class="$style.divider">or</span>
 
     <div :class="$style.inputGroup">
-      <BaseInput name="login" label="Login" type="text"></BaseInput>
-      <BasePassword name="password" label="Password"></BasePassword>
+      <BaseInput
+        name="login"
+        label="Login"
+        type="text"
+      />
+      <BasePassword
+        name="password"
+        label="Password"
+      />
     </div>
-    <BaseButton :class="$style.button">Log In</BaseButton>
-    <BaseLink :class="$style.forgotPasswordLink" :to="{ name: routes.RECOVER }">Forgot password?</BaseLink>
+    <BaseButton :class="$style.button">
+      Log In
+    </BaseButton>
+    <BaseLink
+      :class="$style.forgotPasswordLink"
+      :to="{ name: routes.RECOVER }"
+    >
+      Forgot password?
+    </BaseLink>
 
     <span :class="$style.signUpText">
       Need to create an account?

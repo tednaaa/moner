@@ -14,8 +14,8 @@ export const useApiFetch = createFetch({
   options: {
     async onFetchError(ctx) {
       if (ctx.response?.status === 401) {
-        const { logoutUser } = useUserStore()
-        await logoutUser()
+        const userStore = useUserStore()
+        await userStore.logoutUser()
       }
 
       return ctx

@@ -11,6 +11,8 @@ import StarIcon from '@/shared/icons/star-icon.vue';
 
 const props = defineProps<{
   avatarUrl: string
+  userId: number
+  isFollowing: boolean
   name: string
   username: string
   occupation: string
@@ -23,6 +25,8 @@ const emit = defineEmits<{
   editButtonClick: []
   saveButtonClick: []
   cancelButtonClick: []
+  followButtonClick: []
+  unfollowButtonClick: []
 }>()
 
 const profileLinks = [
@@ -37,7 +41,11 @@ const profileLinks = [
 <template>
   <aside :class="$style.sidebar">
     <div :class="$style.user">
-      <img :class="$style.avatar" :src="props.avatarUrl" alt="">
+      <img
+        :class="$style.avatar"
+        :src="props.avatarUrl"
+        alt=""
+      >
       <div :class="$style.userInfo">
         <span :class="$style.name">{{ props.name }}</span>
         <span :class="$style.username">{{ props.username }}</span>
@@ -47,23 +55,45 @@ const profileLinks = [
 
     <div :class="$style.actions">
       <template v-if="isEditMode">
-        <button :class="[$style.actionsButton, $style.saveButton]" @click="emit('saveButtonClick')">
+        <button
+          :class="[$style.actionsButton, $style.saveButton]"
+          @click="emit('saveButtonClick')"
+        >
           Save
         </button>
-        <button :class="[$style.actionsButton, $style.cancelButton]" @click="emit('cancelButtonClick')">
+        <button
+          :class="[$style.actionsButton, $style.cancelButton]"
+          @click="emit('cancelButtonClick')"
+        >
           Cancel
         </button>
       </template>
-      <button v-else-if="isCurrentUserProfile" :class="$style.editButton" @click="emit('editButtonClick')">
+      <button
+        v-else-if="isCurrentUserProfile"
+        :class="$style.editButton"
+        @click="emit('editButtonClick')"
+      >
         Edit Profile
       </button>
       <template v-else>
-        <button :class="[$style.actionsButton, $style.followButton]">
-          <i class="pi pi-user-plus"></i>
+        <button
+          v-if="props.isFollowing"
+          :class="[$style.actionsButton, $style.unfollowButton]"
+          @click="emit('unfollowButtonClick')"
+        >
+          <i class="pi pi-user-minus" />
+          <span>Unfollow</span>
+        </button>
+        <button
+          v-else
+          :class="[$style.actionsButton, $style.followButton]"
+          @click="emit('followButtonClick')"
+        >
+          <i class="pi pi-user-plus" />
           <span>Follow</span>
         </button>
         <button :class="[$style.actionsButton, $style.messageButton]">
-          <i class="pi pi-envelope"></i>
+          <i class="pi pi-envelope" />
           <span>Message</span>
         </button>
       </template>
@@ -73,45 +103,70 @@ const profileLinks = [
     <div :class="$style.links">
       <template v-if="isEditMode">
         <div :class="$style.link">
-          <GmailIcon :class="$style.linkIcon"></GmailIcon>
-          <InputText :class="$style.linkInput" aria-label="Profile Gmail link" />
+          <GmailIcon :class="$style.linkIcon" />
+          <InputText
+            :class="$style.linkInput"
+            aria-label="Profile Gmail link"
+          />
         </div>
         <div :class="$style.link">
-          <LinkedinIcon :class="$style.linkIcon"></LinkedinIcon>
-          <InputText :class="$style.linkInput" aria-label="Profile LinkedIn link" />
+          <LinkedinIcon :class="$style.linkIcon" />
+          <InputText
+            :class="$style.linkInput"
+            aria-label="Profile LinkedIn link"
+          />
         </div>
         <div :class="$style.link">
-          <TelegramIcon :class="$style.linkIcon"></TelegramIcon>
-          <InputText :class="$style.linkInput" aria-label="Profile Telegram link" />
+          <TelegramIcon :class="$style.linkIcon" />
+          <InputText
+            :class="$style.linkInput"
+            aria-label="Profile Telegram link"
+          />
         </div>
         <div :class="$style.link">
-          <GithubIcon :class="$style.linkIcon"></GithubIcon>
-          <InputText :class="$style.linkInput" aria-label="Profile GitHub link" />
+          <GithubIcon :class="$style.linkIcon" />
+          <InputText
+            :class="$style.linkInput"
+            aria-label="Profile GitHub link"
+          />
         </div>
         <div :class="$style.link">
-          <WakatimeIcon :class="$style.linkIcon"></WakatimeIcon>
-          <InputText :class="$style.linkInput" aria-label="Profile Wakatime link" />
+          <WakatimeIcon :class="$style.linkIcon" />
+          <InputText
+            :class="$style.linkInput"
+            aria-label="Profile Wakatime link"
+          />
         </div>
       </template>
       <template v-else>
-        <a v-for="{ id, icon, label, link } in profileLinks" :key="id" :class="[$style.link, $style.linkGmail]"
-          :href="link" target="_blank">
-          <component :is="icon" :class="$style.linkIcon"></component>
+        <a
+          v-for="{ id, icon, label, link } in profileLinks"
+          :key="id"
+          :class="[$style.link, $style.linkGmail]"
+          :href="link"
+          target="_blank"
+        >
+          <component
+            :is="icon"
+            :class="$style.linkIcon"
+          />
           <span>{{ label }}</span>
         </a>
       </template>
     </div>
 
     <div :class="$style.stats">
-      <h2 :class="$style.statsTitle">Community Stats</h2>
+      <h2 :class="$style.statsTitle">
+        Community Stats
+      </h2>
 
       <div :class="$style.statBox">
-        <ViewsIcon :class="$style.statIcon"></ViewsIcon>
+        <ViewsIcon :class="$style.statIcon" />
         <span>Views <span :class="$style.statTotal">100</span></span>
         <span>Last week <span :class="$style.statLastWeek">59</span></span>
       </div>
       <div :class="$style.statBox">
-        <StarIcon :class="$style.statIcon"></StarIcon>
+        <StarIcon :class="$style.statIcon" />
         <span>Reputation <span :class="$style.statTotal">999</span></span>
         <span>Last week <span :class="$style.statLastWeek">45</span></span>
       </div>
@@ -190,6 +245,16 @@ const profileLinks = [
 
   &:hover {
     background-color: #007bff3a;
+  }
+}
+
+.unfollowButton {
+  background-color: #ff00001f;
+  color: #ff0000;
+  transition: 0.3s;
+
+  &:hover {
+    background-color: #ff00003a;
   }
 }
 
