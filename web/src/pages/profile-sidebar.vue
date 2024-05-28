@@ -16,6 +16,8 @@ const props = defineProps<{
   name: string
   username: string
   occupation: string
+  followersCount: number
+  followingCount: number
 
   isCurrentUserProfile: boolean
   isEditMode: boolean
@@ -99,6 +101,17 @@ const profileLinks = [
       </template>
     </div>
 
+    <div :class="$style.followingBox">
+      <i
+        class="pi pi-users"
+        :class="$style.followingIcon"
+      />
+      <span :class="$style.followingValue">{{ props.followersCount }}</span>
+      <span>followers</span>
+      <span :class="$style.followingBoxDivider" />
+      <span :class="$style.followingValue">{{ props.followingCount }}</span>
+      <span>following</span>
+    </div>
 
     <div :class="$style.links">
       <template v-if="isEditMode">
@@ -207,6 +220,32 @@ const profileLinks = [
   font-size: 24px;
   line-height: 28px;
   color: white;
+}
+
+.followingBox {
+  display: flex;
+  align-items: center;
+  margin-top: 25px;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.followingIcon {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.followingValue {
+  color: white;
+  margin-right: 5px;
+}
+
+.followingBoxDivider {
+  background-color: white;
+  height: 5px;
+  width: 5px;
+  border-radius: 50%;
+  margin: 0 8px;
 }
 
 .actions {

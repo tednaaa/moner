@@ -238,10 +238,30 @@ async fn get_public_user_route(
 			.follows_repository
 			.is_following(&payload.claims.user.user_id, &user.id)
 			.await
-			.map_err(|_| UsersApiError::UserNotFound(username))?;
+			.map_err(|_| UsersApiError::UserNotFound(username.clone()))?;
 	}
 
-	Ok((StatusCode::OK, Json(PublicUserResponse::from_user(user, is_followed))))
+	let followers_count = state
+		.follows_repository
+		.get_followers_count(&user.id)
+		.await
+		.map_err(|_| UsersApiError::UserNotFound(username.clone()))?;
+
+	let following_count = state
+		.follows_repository
+		.get_following_count(&user.id)
+		.await
+		.map_err(|_| UsersApiError::UserNotFound(username.clone()))?;
+
+	Ok((
+		StatusCode::OK,
+		Json(PublicUserResponse::from_user(
+			user,
+			is_followed,
+			followers_count,
+			following_count,
+		)),
+	))
 }
 
 async fn delete_user_route(

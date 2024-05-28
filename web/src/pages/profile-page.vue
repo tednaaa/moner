@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { computed, ref } from 'vue';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
@@ -19,11 +19,14 @@ import ExperienceItem, { type ExperienceItemInterface } from './experience-item.
 import mockImage from '@/assets/mock.jpg';
 import type { PublicUserResponse } from '@/entities/user/user.types';
 import { useApiFetch } from '@/shared/api/api';
-import { routes } from '@/shared/routes';
 import { useFollowsStore } from '@/entities/follows/follows.store';
+import ProjectItem from './project-item.vue';
+import { routes } from '@/shared/routes';
+import { AUTH_SESSION_REFERRER_KEY } from '@/shared/config';
 
 const userStore = useUserStore()
 const followsStore = useFollowsStore()
+const router = useRouter()
 const route = useRoute()
 
 const isCurrentUserProfile = computed(() => route.params.username === userStore.currentUser.username)
@@ -69,16 +72,27 @@ function disableEditMode() {
 
 async function followUser() {
   if (!visitedUser.value) return
+  if (!userStore.isLoggedIn) {
+    sessionStorage.setItem(AUTH_SESSION_REFERRER_KEY, router.currentRoute.value.fullPath)
+    router.push({ name: routes.LOGIN })
+    return
+  }
 
   const isFollowed = await followsStore.followUser(visitedUser.value.id)
-  if (isFollowed) isFollowing.value = true
+  if (isFollowed) {
+    isFollowing.value = true
+    visitedUser.value.followersCount += 1
+  }
 }
 
 async function unfollowUser() {
   if (!visitedUser.value) return
 
   const isUnfollowed = await followsStore.unfollowUser(visitedUser.value.id)
-  if (isUnfollowed) isFollowing.value = false
+  if (isUnfollowed) {
+    visitedUser.value.followersCount -= 1
+    isFollowing.value = false
+  }
 }
 
 const experience: ExperienceItemInterface[] = [{
@@ -130,6 +144,8 @@ const experience: ExperienceItemInterface[] = [{
         name="Andranik"
         :username="visitedUser.username"
         :is-following="userStore.isLoggedIn && isFollowing"
+        :followers-count="visitedUser.followersCount"
+        :following-count="visitedUser.followingCount"
         :is-edit-mode="isEditMode"
         :is-current-user-profile="isCurrentUserProfile"
         @edit-button-click="enableEditMode"
@@ -150,19 +166,20 @@ const experience: ExperienceItemInterface[] = [{
                 <FolderIcon />
               </span>
             </template>
-            <div :class="$style.projects">
-              <RouterLink
+            <ul :class="$style.projects">
+              <li
                 v-for="i in 25"
                 :key="i"
-                :class="$style.project"
-                :to="{ name: routes.PROJECT, params: { projectId: i } }"
               >
-                <img
-                  :src="mockImage"
-                  alt=""
-                >
-              </RouterLink>
-            </div>
+                <ProjectItem
+                  :project-id="i"
+                  :preview-image="mockImage"
+                  :title="`Project ${i}`"
+                  :views="10"
+                  :likes="24"
+                />
+              </li>
+            </ul>
           </TabPanel>
           <TabPanel>
             <template #header>
@@ -229,6 +246,7 @@ const experience: ExperienceItemInterface[] = [{
   background-color: #1A1A1A;
   position: sticky;
   top: 0;
+  z-index: 1;
   padding-top: 20px;
   padding-bottom: 60px;
 }
@@ -253,6 +271,7 @@ const experience: ExperienceItemInterface[] = [{
     background-color: #1a1a1a;
     position: sticky;
     top: 80px;
+    z-index: 1;
     padding-bottom: 20px;
   }
 

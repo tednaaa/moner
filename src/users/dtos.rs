@@ -21,15 +21,19 @@ pub struct PublicUserResponse {
 	pub email: String,
 	pub username: String,
 	pub is_following: bool,
+	pub followers_count: i64,
+	pub following_count: i64,
 }
 
 impl PublicUserResponse {
-	pub fn from_user(user: User, is_following: bool) -> Self {
+	pub fn from_user(user: User, is_following: bool, followers_count: i64, following_count: i64) -> Self {
 		Self {
 			id: user.id,
 			email: user.email,
 			username: user.username,
 			is_following,
+			followers_count,
+			following_count,
 		}
 	}
 }

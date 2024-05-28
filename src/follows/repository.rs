@@ -85,6 +85,24 @@ impl FollowsRepository {
 
 		Ok(query_result.iter().map(|row| row.followed_id).collect())
 	}
+
+	pub async fn get_followers_count(&self, followed_id: &i64) -> anyhow::Result<i64> {
+		let query_result = sqlx::query!("SELECT COUNT(*) FROM follows WHERE followed_id = $1", followed_id)
+			.fetch_one(&*self.database.pool)
+			.await
+			.context("Failed to get followers count")?;
+
+		Ok(query_result.count.unwrap_or(0))
+	}
+
+	pub async fn get_following_count(&self, follower_id: &i64) -> anyhow::Result<i64> {
+		let query_result = sqlx::query!("SELECT COUNT(*) FROM follows WHERE follower_id = $1", follower_id)
+			.fetch_one(&*self.database.pool)
+			.await
+			.context("Failed to get following count")?;
+
+		Ok(query_result.count.unwrap_or(0))
+	}
 }
 
 #[derive(sqlx::FromRow)]

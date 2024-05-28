@@ -4,10 +4,10 @@ import { ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
 
 import { useApiFetch } from '@/shared/api/api'
-import { router } from '@/pages/router'
 import { routes } from '@/shared/routes'
 import type { LoginUserDto, RegisterUserDto, UserResponse } from './user.types'
 import { AUTH_SESSION_REFERRER_KEY } from '@/shared/config'
+import { useRouter } from 'vue-router'
 
 const getUserInitialState = (): Partial<UserResponse> => ({})
 
@@ -16,6 +16,7 @@ export const useUserStore = defineStore('user', () => {
   const isLoggedIn = ref(false)
   const isLoading = ref(true)
   const toast = useToast()
+  const router = useRouter()
 
   function setLoggedUser(userResponse: UserResponse) {
     currentUser.value = userResponse
