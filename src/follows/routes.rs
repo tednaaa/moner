@@ -23,13 +23,13 @@ use crate::{
 
 #[derive(Clone)]
 pub struct FollowsState {
-	pub follow_repository: FollowsRepository,
+	pub follows_repository: FollowsRepository,
 }
 
 impl FollowsState {
 	pub fn new(database: &Arc<Database>) -> Self {
 		Self {
-			follow_repository: FollowsRepository::new(database),
+			follows_repository: FollowsRepository::new(database),
 		}
 	}
 }
@@ -51,7 +51,7 @@ async fn follow_route(
 	}
 
 	state
-		.follow_repository
+		.follows_repository
 		.follow_user(&current_user.user_id, &request.followed_id)
 		.await
 		.map_err(|_| FollowApiError::FailedToFollowUser())?;
@@ -69,7 +69,7 @@ async fn unfollow_route(
 	}
 
 	state
-		.follow_repository
+		.follows_repository
 		.unfollow_user(&current_user.user_id, &request.unfollowed_id)
 		.await
 		.map_err(|_| FollowApiError::FailedToUnfollowUser())?;

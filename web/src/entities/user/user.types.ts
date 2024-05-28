@@ -25,4 +25,6 @@ export interface PublicUserResponse {
   avatar: string
   occupation: string
   isFollowing: boolean
+  followersCount: number
+  followingCount: number
 }
