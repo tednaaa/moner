@@ -138,7 +138,6 @@ pub struct User {
 	pub password: String,
 	pub is_verified: bool,
 	pub created_at: DateTime<Utc>,
-	pub updated_at: DateTime<Utc>,
 }
 
 impl From<User> for UserResponse {
@@ -148,7 +147,6 @@ impl From<User> for UserResponse {
 			email: user.email,
 			username: user.username,
 			created_at: user.created_at,
-			updated_at: user.updated_at,
 		}
 	}
 }

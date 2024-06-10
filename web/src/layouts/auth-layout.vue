@@ -1,48 +1,28 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 const props = defineProps<{
-  statusText: string
-}>()
-
-const emit = defineEmits<{
-  submit: []
-}>()
+  statusText: string;
+}>();
 </script>
 
 <template>
-  <div :class="$style.wrapper">
-    <div :class="$style.statusBar">
-      <span :class="$style.statusText">{{ props.statusText }}</span>
+  <div class="flex justify-center items-center gap-12 h-full w-full">
+    <div class="relative">
+      <span class="block py-5 px-10 mb-12 ml-24 text-xl font-medium bg-secondary text-white rounded-lg">
+        {{ props.statusText }}
+      </span>
       <div :class="$style.statusImageWrapper">
-        <img
-          :class="$style.statusImage"
-          src="@/assets/logo.svg"
-          alt="logo"
-        >
+        <img src="@/assets/logo.svg" alt="logo" />
       </div>
     </div>
-    <form
-      :class="$style.form"
-      @submit.prevent="emit('submit')"
+    <div
+      class="flex flex-col max-w-md w-full py-6 px-8 rounded-lg text-white bg-gradient-to-br from-zinc-800 to-zinc-900"
     >
-      <slot />
-    </form>
+      <slot></slot>
+    </div>
   </div>
 </template>
 
-<style module lang='scss'>
-.wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 50px;
-  height: 100%;
-  width: 100%;
-}
-
-.statusBar {
-  position: relative;
-}
-
+<style module lang="scss">
 .statusImageWrapper {
   height: 150px;
   width: 150px;
@@ -50,10 +30,10 @@ const emit = defineEmits<{
 
   &::before,
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     border-radius: 50%;
-    background-color: white;
+    background-color: hsl(var(--secondary));
   }
 
   &::before {
@@ -69,35 +49,5 @@ const emit = defineEmits<{
     top: -40px;
     right: -30px;
   }
-}
-
-.statusText {
-  display: block;
-  padding: 20px 40px;
-  margin-bottom: 50px;
-  margin-left: 100px;
-  font-size: 20px;
-  font-weight: 500;
-  background-color: white;
-  color: var(--color-black);
-  border-radius: 20px;
-}
-
-.status-default {
-  color: var(--color-black);
-}
-
-.form {
-  background: linear-gradient(135deg, rgba(38, 38, 38, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%);
-  border: 1px solid #616161;
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-  color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 500px;
-  width: 100%;
-  padding: 60px 50px;
-  border-radius: 20px;
 }
 </style>

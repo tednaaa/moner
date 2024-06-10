@@ -12,25 +12,23 @@ use tower_http::cors::CorsLayer;
 use tower_http::propagate_header::PropagateHeaderLayer;
 
 use crate::database::{self};
+use crate::experience::routes::{ExperienceApiError, ExperienceState};
 use crate::follows::routes::{FollowApiError, FollowsState};
 use crate::settings::SETTINGS;
 use crate::users::routes::{UsersApiError, UsersState};
-use crate::{follows, users};
+use crate::{experience, follows, users};
 
 pub async fn create_app() -> IntoMakeService<Router> {
 	let database = Arc::new(database::Database::init().await.unwrap());
 
 	let users_state = UsersState::new(&database);
 	let follows_state = FollowsState::new(&database);
+	let experience_state = ExperienceState::new(&database);
 
 	let router = Router::new()
 		.merge(users::routes::init().with_state(users_state))
 		.merge(follows::routes::init().with_state(follows_state))
-		// .merge(Router::new().nest(
-		// 	"/v1",
-		// 	// All public v1 routes will be nested here.
-		// 	Router::new().merge(users::routes::init()),
-		// ))
+		.merge(experience::routes::init().with_state(experience_state))
 		.layer(tower_http::trace::TraceLayer::new_for_http())
 		.layer(CookieManagerLayer::new())
 		.layer(CompressionLayer::new())
@@ -58,17 +56,21 @@ pub async fn create_app() -> IntoMakeService<Router> {
 #[derive(Debug, Error)]
 pub enum ApiError {
 	#[error("{0}")]
-	UsersApiError(#[from] UsersApiError),
+	Users(#[from] UsersApiError),
 
 	#[error("{0}")]
-	FollowApiError(#[from] FollowApiError),
+	Follow(#[from] FollowApiError),
+
+	#[error("{0}")]
+	Experience(#[from] ExperienceApiError),
 }
 
 impl IntoResponse for ApiError {
 	fn into_response(self) -> Response {
 		match self {
-			ApiError::UsersApiError(error) => error.into_response(),
-			ApiError::FollowApiError(error) => error.into_response(),
+			ApiError::Users(error) => error.into_response(),
+			ApiError::Follow(error) => error.into_response(),
+			ApiError::Experience(error) => error.into_response(),
 		}
 	}
 }

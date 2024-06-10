@@ -60,7 +60,7 @@ web-build:
   script:
     - npm run build
 
-web-test:
+web-test-unit:
   <<: *web_job
   stage: test
   script:

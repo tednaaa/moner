@@ -1,4 +1,4 @@
-import { afterEach } from 'vitest'
-import { enableAutoUnmount } from '@vue/test-utils'
+import { afterEach } from "vitest";
+import { enableAutoUnmount } from "@vue/test-utils";
 
-enableAutoUnmount(afterEach)
+enableAutoUnmount(afterEach);

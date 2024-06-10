@@ -1,0 +1,82 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM experience WHERE user_id = $1 ORDER BY start_date DESC",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "user_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "company_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "occupation",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 4,
+        "name": "location_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 5,
+        "name": "location_type",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 6,
+        "name": "employment_type",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 7,
+        "name": "start_date",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 8,
+        "name": "end_date",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 9,
+        "name": "is_current",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 10,
+        "name": "description",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "711c1721d589dd5ebd64978fdecfdf2bd36b924c3ca307b4c40cf6cac744050a"
+}

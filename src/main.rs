@@ -7,6 +7,7 @@ mod services;
 mod settings;
 mod validation;
 
+mod experience;
 mod follows;
 mod users;
 

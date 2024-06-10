@@ -1,26 +1,27 @@
-import './scss/main.scss'
-import 'primeicons/primeicons.css'
+import "./scss/main.scss";
+import "primeicons/primeicons.css";
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import { MotionPlugin } from '@vueuse/motion';
-import PrimeVue from 'primevue/config';
-import ToastService from 'primevue/toastservice';
-import Tooltip from 'primevue/tooltip';
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+import { MotionPlugin } from "@vueuse/motion";
 
-import App from './app.vue'
+import PrimeVue from "primevue/config";
+import ToastService from "primevue/toastservice";
+import ConfirmationService from "primevue/confirmationservice";
 
-import { router } from '@/pages/router'
-import { designSystem } from '@/shared/ui';
+import App from "./app.vue";
 
-const app = createApp(App)
+import { pt } from "@/shared/ui";
+import { router } from "@/pages/router";
 
-app.use(PrimeVue, { unstyled: true, pt: designSystem })
-app.use(MotionPlugin)
-app.use(ToastService)
-app.directive('tooltip', Tooltip);
+const app = createApp(App);
 
-app.use(createPinia())
-app.use(router)
+app.use(PrimeVue, { unstyled: true, pt });
+app.use(ToastService);
+app.use(ConfirmationService);
 
-app.mount('#app')
+app.use(MotionPlugin);
+app.use(createPinia());
+app.use(router);
+
+app.mount("#app");

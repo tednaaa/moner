@@ -1,41 +1,52 @@
-import { defineStore, acceptHMRUpdate } from 'pinia'
+import { defineStore, acceptHMRUpdate } from "pinia";
+import { useToast } from "primevue/usetoast";
 
-import { useToast } from 'primevue/usetoast'
+import { useApiFetch } from "@/shared/api/api";
 
-import { useApiFetch } from '@/shared/api/api'
-
-export const useFollowsStore = defineStore('follows', () => {
-  const toast = useToast()
+export const useFollowsStore = defineStore("follows", () => {
+  const toast = useToast();
 
   function followUser(followedId: number): Promise<boolean> {
-    return new Promise(resolve => {
-      const { onFetchError, onFetchResponse } = useApiFetch("/follow").post({ followedId })
+    return new Promise((resolve) => {
+      const { onFetchError, onFetchResponse } = useApiFetch("/follow").post({
+        followedId,
+      });
 
       onFetchError(() => {
-        toast.add({ severity: 'error', summary: 'Failed to follow', life: 5000 })
-        resolve(false)
-      })
+        toast.add({
+          severity: "error",
+          summary: "Failed to follow",
+          detail: "Please try again later",
+        });
+        resolve(false);
+      });
 
-      onFetchResponse(() => resolve(true))
-    })
+      onFetchResponse(() => resolve(true));
+    });
   }
 
   function unfollowUser(unfollowedId: number): Promise<boolean> {
-    return new Promise(resolve => {
-      const { onFetchError, onFetchResponse } = useApiFetch(`/unfollow`).post({ unfollowedId })
+    return new Promise((resolve) => {
+      const { onFetchError, onFetchResponse } = useApiFetch(`/unfollow`).post({
+        unfollowedId,
+      });
 
       onFetchError(() => {
-        toast.add({ severity: 'error', summary: 'Failed to unfollow', life: 5000 })
-        resolve(false)
-      })
+        toast.add({
+          severity: "error",
+          summary: "Failed to unfollow",
+          detail: "Please try again later",
+        });
+        resolve(false);
+      });
 
-      onFetchResponse(() => resolve(true))
-    })
+      onFetchResponse(() => resolve(true));
+    });
   }
 
-  return { followUser, unfollowUser }
-})
+  return { followUser, unfollowUser };
+});
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useFollowsStore, import.meta.hot))
+  import.meta.hot.accept(acceptHMRUpdate(useFollowsStore, import.meta.hot));
 }
