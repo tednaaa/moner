@@ -11,7 +11,6 @@ pub struct UserResponse {
 	pub email: String,
 	pub username: String,
 	pub created_at: DateTime<Utc>,
-	pub updated_at: DateTime<Utc>,
 }
 
 #[derive(Debug, Serialize)]

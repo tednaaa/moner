@@ -9,22 +9,10 @@
   >
     <defs>
       <clipPath id="clip19_1228">
-        <rect
-          id="eye"
-          width="15.000000"
-          height="15.000000"
-          fill="white"
-          fill-opacity="0"
-        />
+        <rect id="eye" width="15.000000" height="15.000000" fill="white" fill-opacity="0" />
       </clipPath>
     </defs>
-    <rect
-      id="eye"
-      width="15.000000"
-      height="15.000000"
-      fill="white"
-      fill-opacity="0"
-    />
+    <rect id="eye" width="15.000000" height="15.000000" fill="white" fill-opacity="0" />
     <g clip-path="url(#clip19_1228)">
       <path
         id="Vector"

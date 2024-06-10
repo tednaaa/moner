@@ -1,0 +1,34 @@
+body {
+  overflow-x: hidden;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+input,
+button,
+select,
+textarea {
+  background-color: transparent;
+  font: inherit;
+}
+
+input {
+  width: 100%;
+}
+
+img {
+  width: 100%;
+  max-width: 100%;
+}

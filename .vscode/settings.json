@@ -1,13 +1,11 @@
 {
   "rust-analyzer.check.command": "clippy",
   "rust-analyzer.checkOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[rust]": {
     "editor.defaultFormatter": "rust-lang.rust-analyzer"
   },
-  "[typescript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
-  },
-  "[scss]": {
-    "editor.defaultFormatter": "vscode.css-language-features"
-  }
+
+  "scss.lint.unknownAtRules": "ignore",
+  "css.customData": [".vscode/tailwind.json"]
 }

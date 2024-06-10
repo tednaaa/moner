@@ -1,43 +1,43 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import { routes } from '@/shared/routes'
+import { createRouter, createWebHistory } from "vue-router";
+import { routes } from "@/shared/routes";
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path: "/",
       name: routes.ROOT,
-      redirect: { name: routes.LOGIN }
+      redirect: { name: routes.LOGIN },
     },
     {
-      path: '/:username/:projectId',
+      path: "/:username/:projectId",
       name: routes.PROJECT,
-      component: () => import('./project-page.vue'),
+      component: () => import("./project/ProjectPage.vue"),
     },
     {
-      path: '/:username',
+      path: "/:username",
       name: routes.PROFILE,
-      component: () => import('./profile-page.vue'),
+      component: () => import("./profile/ProfilePage.vue"),
     },
     {
-      path: '/auth',
+      path: "/auth",
       children: [
         {
-          path: 'login',
+          path: "login",
           name: routes.LOGIN,
-          component: () => import('./auth/login-page.vue'),
+          component: () => import("./auth/LoginPage.vue"),
         },
         {
-          path: 'sign-up',
-          name: routes.SIGN_UP,
-          component: () => import('./auth/sign-up-page.vue'),
+          path: "register",
+          name: routes.REGISTER,
+          component: () => import("./auth/RegisterPage.vue"),
         },
         {
-          path: 'recover',
+          path: "recover",
           name: routes.RECOVER,
-          component: () => import('./auth/recover-page.vue'),
+          component: () => import("./auth/RecoverPage.vue"),
         },
       ],
     },
-  ]
-})
+  ],
+});

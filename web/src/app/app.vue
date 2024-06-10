@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
-import Toast from 'primevue/toast';
+import { RouterView } from "vue-router";
+import Toast from "primevue/toast";
 
-import { useUserStore } from '@/entities/user/user.store';
+import { useUserStore } from "@/entities/user/user.store";
 
-const userStore = useUserStore()
+const userStore = useUserStore();
 
-userStore.getCurrentUser()
+userStore.getCurrentUser();
 </script>
 
 <template>
