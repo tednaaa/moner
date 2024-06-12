@@ -7,6 +7,17 @@ CREATE TABLE IF NOT EXISTS users (
 	created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE skills (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS user_skills (
+	user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+	skill_id BIGINT NOT NULL REFERENCES skills(id) ON DELETE CASCADE,
+	PRIMARY KEY (user_id, skill_id)
+);
+
 CREATE TABLE IF NOT EXISTS follows (
     follower_id BIGSERIAL NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     followed_id BIGSERIAL NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -29,6 +40,13 @@ CREATE TABLE IF NOT EXISTS experience (
 
 INSERT INTO users (email, username, password, is_verified) VALUES
 	('tednaaa@gmail.com', 'tednaaa', '$argon2id$v=19$m=19456,t=2,p=1$BtOCIz2abhoTV0HU8U7YOA$nXpfAv7ubnOFP1TF+Ym00zj83l+J6+/Kc1W1ZNFooDQ', true);
+
+INSERT INTO skills (name) VALUES
+	('Rust'), ('Go'), ('Python'), ('Javascript'), ('Typescript'),
+	('UI/UX'), ('Graphic Design'), ('Product Management'), ('Digital Marketing'), ('Data Analytics');
+
+INSERT INTO user_skills (user_id, skill_id) VALUES
+	(1, 1), (1, 2), (1, 3), (1, 4), (1, 5);
 
 INSERT INTO experience (user_id, company_name, occupation, location_name, location_type, employment_type, start_date, end_date, description) VALUES
 	(1, 'Google', 'Software Engineer', 'Mountain View, CA', 'remote', 'full-time', '2020-01-01 00:00:00', '2021-01-01 00:00:00', 'I love coding!');

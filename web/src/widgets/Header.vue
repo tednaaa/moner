@@ -50,10 +50,10 @@ function redirectToLogin() {
       </div>
 
       <template v-if="userStore.isLoggedIn">
-        <button class="flex" aria-haspopup="true" aria-controls="overlay_menu" @click="toggle">
+        <button class="flex" aria-haspopup="true" @click="toggle">
           <Avatar size="large" :image="mockImage" />
         </button>
-        <Menu id="overlay_menu" ref="menu" :model="menuItems" :popup="true" />
+        <Menu ref="menu" :model="menuItems" :popup="true" />
       </template>
       <button v-else :class="$style.loginButton" @click="redirectToLogin">Log In</button>
     </div>

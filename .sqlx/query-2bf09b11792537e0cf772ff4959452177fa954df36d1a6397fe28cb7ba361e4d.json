@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n\t\t\t\tSELECT s.id, s.name\n\t\t\t\tFROM skills s\n\t\t\t\tJOIN user_skills us ON s.id = us.skill_id\n\t\t\t\tWHERE us.user_id = $1;\n\t\t\t",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "2bf09b11792537e0cf772ff4959452177fa954df36d1a6397fe28cb7ba361e4d"
+}

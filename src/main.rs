@@ -9,6 +9,7 @@ mod validation;
 
 mod experience;
 mod follows;
+mod skills;
 mod users;
 
 use settings::SETTINGS;
