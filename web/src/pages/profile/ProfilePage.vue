@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { watchDebounced } from "@vueuse/core";
 import { useRoute, useRouter } from "vue-router";
 import { computed, ref } from "vue";
 import TabView from "primevue/tabview";
@@ -25,17 +26,17 @@ import ProfileSidebar from "./components/ProfileSidebar.vue";
 import ExperienceItem from "./components/ExperienceItem.vue";
 import ExperienceForm from "./components/ExperienceForm.vue";
 import { useExperienceStore } from "@/entities/experience/experience.store";
+import SkillsSuggestions, { type Skill } from "./components/SkillsSuggestions.vue";
+import { useToast } from "primevue/usetoast";
 
 const userStore = useUserStore();
 const followsStore = useFollowsStore();
 const experienceStore = useExperienceStore();
+const toast = useToast();
 const router = useRouter();
 const route = useRoute();
 
 const isCurrentUserProfile = computed(() => route.params.username === userStore.currentUser.username);
-
-const skills = ref(["React", "Vue", "Angular", "Node", "Solidity"]);
-const initialSkills = ref(skills.value);
 
 const isEditMode = ref(false);
 const showExperienceForm = ref(false);
@@ -65,10 +66,44 @@ function updateProfile() {
   disableEditMode();
 }
 
-function updateSkills() {
+const skills = ref<Skill[]>([]);
+const initialSkills = ref<Skill[]>([]);
+
+const { onFetchResponse: onSkillsFetchResponse } = useApiFetch("/skills").get();
+onSkillsFetchResponse(async (response) => {
+  const data: Skill[] = await response.json();
+  skills.value = data;
+  initialSkills.value = data;
+});
+
+const skillsInput = ref("");
+watchDebounced(
+  skillsInput,
+  (string) => {
+    console.log(string);
+  },
+  { debounce: 1000, maxWait: 5000 },
+);
+
+function appendSkillToList(skill: Skill) {
+  if (skills.value && !skills.value.some((s) => s.id === skill.id)) {
+    skills.value.push(skill);
+  }
+}
+
+async function updateSkills() {
+  const { statusCode } = await useApiFetch("/skills").json().post({ skills: skills.value });
+  if (statusCode.value !== 200) {
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Failed to update skills",
+    });
+    return;
+  }
+
   initialSkills.value = skills.value;
-  // TODO: API request
-  console.log("update_skills", skills.value);
+  disableEditMode();
 }
 
 function cancelEdit() {
@@ -186,16 +221,34 @@ function deleteExperienceInList(id: number) {
                 <h2 class="text-2xl font-bold text-white">Skills</h2>
 
                 <div class="flex flex-wrap gap-2 mt-5">
-                  <Chips
-                    v-if="isEditMode"
-                    v-model="skills"
-                    placeholder="🐙  Tell me about your skills"
-                    :max="30"
-                    :pt="{ inputToken: 'min-w-60' }"
-                    :pt-options="{ mergeProps: true }"
-                  />
-                  <Chip v-for="skill in skills" v-else :key="skill">
-                    {{ skill }}
+                  <div v-if="isEditMode">
+                    <Chips
+                      ref="skillsInputRef"
+                      class="mb-4"
+                      placeholder="🐙  Tell me about your skills"
+                      :max="30"
+                      :allow-duplicate="false"
+                      :pt="{ inputToken: 'min-w-60' }"
+                      :pt-options="{ mergeProps: true }"
+                      :model-value="skills"
+                      :input-props="{
+                        value: skillsInput,
+                        onInput: (event) => {
+                          const target = event.currentTarget as HTMLInputElement;
+                          skillsInput = target.value;
+                        },
+                      }"
+                      @remove="({ value: [{ id }] }) => (skills = skills.filter((skill) => skill.id !== id))"
+                    >
+                      <template #chip="slotProps">
+                        {{ slotProps.value.name }}
+                      </template>
+                    </Chips>
+                    <SkillsSuggestions @append="appendSkillToList" />
+                  </div>
+
+                  <Chip v-for="skill in skills" v-else :key="skill.id">
+                    {{ skill.name }}
                   </Chip>
                 </div>
               </div>

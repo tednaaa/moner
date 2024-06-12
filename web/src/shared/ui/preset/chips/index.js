@@ -105,7 +105,7 @@ export default {
       "w-4 h-4",
 
       // Misc
-      "cursor-pointer",
+      "cursor-pointer transition-colors hover:text-red-600",
     ],
   },
 };
