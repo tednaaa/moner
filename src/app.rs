@@ -1,15 +1,18 @@
 use std::sync::Arc;
+use std::time::Duration;
 
 use axum::http::{header, HeaderValue, Method, StatusCode};
 use axum::response::{IntoResponse, Response};
 use axum::routing::IntoMakeService;
 use axum::Json;
 use axum::Router;
+use log::debug;
 use thiserror::Error;
 use tower_cookies::CookieManagerLayer;
 use tower_http::compression::CompressionLayer;
 use tower_http::cors::CorsLayer;
 use tower_http::propagate_header::PropagateHeaderLayer;
+use tower_http::trace::TraceLayer;
 
 use crate::database::{self};
 use crate::experience::routes::{ExperienceApiError, ExperienceState};
@@ -32,7 +35,20 @@ pub async fn create_app() -> IntoMakeService<Router> {
 		.merge(follows::routes::init().with_state(follows_state))
 		.merge(experience::routes::init().with_state(experience_state))
 		.merge(skills::routes::init().with_state(skills_state))
-		.layer(tower_http::trace::TraceLayer::new_for_http())
+		.layer(
+			TraceLayer::new_for_http()
+				.on_request(|request: &axum::http::Request<_>, _span: &tracing::Span| {
+					let method = request.method();
+					let uri = request.uri();
+					debug!("{:?} {:?}", method, uri);
+				})
+				.on_response(
+					|response: &axum::response::Response<_>, duration: Duration, _span: &tracing::Span| {
+						let status = response.status();
+						debug!("{:?} {:?}", status, duration);
+					},
+				),
+		)
 		.layer(CookieManagerLayer::new())
 		.layer(CompressionLayer::new())
 		.layer(PropagateHeaderLayer::new(header::HeaderName::from_static(
