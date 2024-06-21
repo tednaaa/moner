@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use axum::{
 	debug_handler,
-	extract::State,
+	extract::{Path, State},
 	http::StatusCode,
 	middleware,
 	response::{IntoResponse, Response},
@@ -38,10 +38,10 @@ impl SkillsState {
 
 pub fn init() -> Router<SkillsState> {
 	Router::new()
-		.route("/skills", get(get_user_skills_route))
 		.route("/skills", post(update_user_skills_route))
 		.route("/skills/suggestions", get(get_suggestions))
 		.route_layer(middleware::from_fn(auth::middleware))
+		.route("/skills/:user_id", get(get_user_skills_route))
 }
 
 async fn get_suggestions(State(state): State<SkillsState>) -> ApiResult<Json<Vec<Skill>>> {
@@ -55,12 +55,12 @@ async fn get_suggestions(State(state): State<SkillsState>) -> ApiResult<Json<Vec
 }
 
 async fn get_user_skills_route(
-	Extension(current_user): Extension<CurrentUser>,
+	Path(user_id): Path<i64>,
 	State(state): State<SkillsState>,
 ) -> ApiResult<Json<Vec<Skill>>> {
 	let user_skills = state
 		.skills_repository
-		.get_user_skills(&current_user.user_id)
+		.get_user_skills(&user_id)
 		.await
 		.map_err(|_| SkillsApiError::GetUserSkills())?;
 

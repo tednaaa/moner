@@ -47,34 +47,34 @@ const { data: visitedUser, onFetchResponse } = useApiFetch(
 ).json<PublicUserResponse>();
 const experienceList = ref<Experience[]>([]);
 
+const skills = ref<Skill[]>([]);
+const initialSkills = ref<Skill[]>([]);
+
 onFetchResponse(async () => {
   if (!visitedUser.value) return;
 
   isFollowing.value = visitedUser.value.isFollowing;
 
-  const { data } = await useApiFetch(`/${visitedUser.value.id}/experience`).json<Experience[]>();
-  if (data.value)
-    experienceList.value = data.value.map((experience) => ({
+  const { data: fetchedExperience } = await useApiFetch(`/${visitedUser.value.id}/experience`).json<Experience[]>();
+  if (fetchedExperience.value) {
+    experienceList.value = fetchedExperience.value.map((experience) => ({
       ...experience,
       startDate: new Date(experience.startDate),
       endDate: experience.endDate ? new Date(experience.endDate) : undefined,
     }));
+  }
+
+  const { data: fetchedSkills } = await useApiFetch(`/skills/${visitedUser.value.id}`).json<Skill[]>();
+  if (fetchedSkills.value) {
+    skills.value = fetchedSkills.value;
+    initialSkills.value = fetchedSkills.value;
+  }
 });
 
 function updateProfile() {
   updateSkills();
   disableEditMode();
 }
-
-const skills = ref<Skill[]>([]);
-const initialSkills = ref<Skill[]>([]);
-
-const { onFetchResponse: onSkillsFetchResponse } = useApiFetch("/skills").get();
-onSkillsFetchResponse(async (response) => {
-  const data: Skill[] = await response.json();
-  skills.value = data;
-  initialSkills.value = data;
-});
 
 const skillsInput = ref("");
 watchDebounced(
