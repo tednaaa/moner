@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { useColorMode } from "@vueuse/core";
 import { RouterLink, useRouter } from "vue-router";
 import InputText from "primevue/inputtext";
-import Button from "primevue/button";
 import Menu from "primevue/menu";
 import Avatar from "primevue/avatar";
 
@@ -15,7 +13,6 @@ import type { MenuItem } from "primevue/menuitem";
 
 const userStore = useUserStore();
 const router = useRouter();
-const colorMode = useColorMode();
 
 const menuItems = computed<MenuItem[]>(() => [
   {
