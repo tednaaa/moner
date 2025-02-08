@@ -1,0 +1,49 @@
+.p-badge {
+  @reference inline-flex items-center justify-center rounded-md
+        py-0 px-2 text-xs font-bold min-w-6 h-6
+        bg-primary text-primary-contrast;
+}
+
+.p-badge-dot {
+  @reference min-w-2 h-2 rounded-full p-0;
+}
+
+.p-badge-circle {
+  @reference p-0 rounded-full;
+}
+
+.p-badge-secondary {
+  @reference bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300;
+}
+
+.p-badge-success {
+  @reference bg-green-500 dark:bg-green-400 text-white dark:text-green-950;
+}
+
+.p-badge-info {
+  @reference bg-sky-500 dark:bg-sky-400 text-white dark:text-sky-950;
+}
+
+.p-badge-warn {
+  @reference bg-orange-500 dark:bg-orange-400 text-white dark:text-orange-950;
+}
+
+.p-badge-danger {
+  @reference bg-red-500 dark:bg-red-400 text-white dark:text-red-950;
+}
+
+.p-badge-contrast {
+  @reference bg-surface-950 dark:bg-white text-white dark:text-surface-950;
+}
+
+.p-badge-sm {
+  @reference text-[0.625rem] min-w-5 h-5;
+}
+
+.p-badge-lg {
+  @reference text-sm min-w-7 h-7;
+}
+
+.p-badge-xl {
+  @reference text-base min-w-8 h-8;
+}

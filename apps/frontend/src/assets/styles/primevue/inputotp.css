@@ -1,0 +1,9 @@
+@import './inputtext';
+
+.p-inputotp {
+  @reference flex items-center gap-2;
+}
+
+.p-inputotp-input {
+  @reference text-center w-10;
+}

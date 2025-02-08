@@ -1,0 +1,84 @@
+.p-tabs {
+  @reference flex flex-col;
+}
+
+.p-tablist {
+  @reference flex relative;
+}
+
+.p-tabs-scrollable > .p-tablist {
+  @reference overflow-hidden;
+}
+
+.p-tablist-viewport {
+  @reference overflow-x-auto overflow-y-hidden overscroll-y-contain overscroll-x-auto;
+}
+
+.p-tablist-viewport::-webkit-scrollbar {
+  @reference hidden;
+}
+
+.p-tablist-tab-list {
+  @reference relative flex bg-surface-0 dark:bg-surface-900 border-b border-surface-200 dark:border-surface-700;
+}
+
+.p-tablist-content {
+  @reference flex-grow;
+}
+
+.p-tablist-nav-button {
+  @reference !absolute flex-shrink-0 top-0 z-20 h-full flex items-center justify-center cursor-pointer
+        bg-surface-0 dark:bg-surface-900 text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-0 w-10
+        shadow-[0px_0px_10px_50px_rgba(255,255,255,0.6)] dark:shadow-[0px_0px_10px_50px] dark:shadow-surface-900/50
+        focus-visible:z-10 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-[-1px] focus-visible:outline-primary
+        transition-colors duration-200;
+}
+
+.p-tablist-prev-button {
+  @reference start-0;
+}
+
+.p-tablist-next-button {
+  @reference end-0;
+}
+
+.p-tablist-prev-button:dir(rtl),
+.p-tablist-next-button:dir(rtl) {
+  @reference rotate-180;
+}
+
+.p-tab {
+  @reference flex-shrink-0 cursor-pointer select-none relative whitespace-nowrap py-4 px-[1.125rem]
+        border-b border-surface-200 dark:border-surface-700 font-semibold
+        text-surface-500 dark:text-surface-400
+        transition-colors duration-200 -mb-px;
+}
+
+.p-tab.p-disabled {
+  @reference cursor-default;
+}
+
+.p-tab:not(.p-disabled):focus-visible {
+  @reference z-10 outline outline-1 outline-offset-[-1px] outline-primary;
+}
+
+.p-tab:not(.p-tab-active):not(.p-disabled):hover {
+  @reference text-surface-700 dark:text-surface-0;
+}
+
+.p-tab-active {
+  @reference border-primary text-primary;
+}
+
+.p-tabpanels {
+  @reference bg-surface-0 dark:bg-surface-900 text-surface-700 dark:text-surface-0
+        pt-[0.875rem] pb-[1.125rem] px-[1.125rem] outline-none;
+}
+
+.p-tablist-active-bar {
+  @reference z-10 block absolute -bottom-px h-px bg-primary transition-[left] duration-200 ease-[cubic-bezier(0.35,0,0.25,1)];
+}
+
+.p-tablist-viewport {
+  @reference [scrollbar-behavior:smooth] [scrollbar-width:none];
+}

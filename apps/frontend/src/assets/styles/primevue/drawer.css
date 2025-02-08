@@ -1,0 +1,94 @@
+@import './button';
+
+.p-drawer {
+  @reference flex flex-col pointer-events-auto relative transition-transform duration-300
+        border border-surface-200 dark:border-surface-700
+        bg-surface-0 dark:bg-surface-900
+        text-surface-700 dark:text-surface-0
+        shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)];
+}
+
+.p-drawer {
+  @reference [transform:translate3d(0,0,0)];
+}
+
+.p-drawer-content {
+  @reference overflow-y-auto flex-grow pt-0 pb-5 px-5;
+}
+
+.p-drawer-header {
+  @reference flex items-center justify-between flex-shrink-0 p-5;
+}
+
+.p-drawer-footer {
+  @reference p-5;
+}
+
+.p-drawer-title {
+  @reference font-semibold text-2xl;
+}
+
+.p-drawer-full .p-drawer {
+  @reference transition-none transform-none w-screen h-screen max-h-full top-0 left-0;
+}
+
+.p-drawer-left .p-drawer-enter-from,
+.p-drawer-left .p-drawer-leave-to {
+  @reference -translate-x-full;
+}
+
+.p-drawer-right .p-drawer-enter-from,
+.p-drawer-right .p-drawer-leave-to {
+  @reference translate-x-full;
+}
+
+.p-drawer-top .p-drawer-enter-from,
+.p-drawer-top .p-drawer-leave-to {
+  @reference -translate-y-full;
+}
+
+.p-drawer-bottom .p-drawer-enter-from,
+.p-drawer-bottom .p-drawer-leave-to {
+  @reference translate-y-full;
+}
+
+.p-drawer-full .p-drawer-enter-from,
+.p-drawer-full .p-drawer-leave-to {
+  @reference opacity-0;
+}
+
+.p-drawer-full .p-drawer-enter-active,
+.p-drawer-full .p-drawer-leave-active {
+  @reference transition-opacity animate-duration-400 ease-[cubic-bezier(0.25,0.8,0.25,1)];
+}
+
+.p-drawer-left .p-drawer {
+  @reference w-80 h-full border-r;
+}
+
+.p-drawer-right .p-drawer {
+  @reference w-80 h-full border-s;
+}
+
+.p-drawer-top .p-drawer {
+  @reference h-40 w-full border-b;
+}
+
+.p-drawer-bottom .p-drawer {
+  @reference h-40 w-full border-t;
+}
+
+.p-drawer-left .p-drawer-content,
+.p-drawer-right .p-drawer-content,
+.p-drawer-top .p-drawer-content,
+.p-drawer-bottom .p-drawer-content {
+  @reference w-full h-full;
+}
+
+.p-drawer-open {
+  @reference flex;
+}
+
+.p-overlay-mask:dir(rtl) {
+  @reference flex-row-reverse;
+}

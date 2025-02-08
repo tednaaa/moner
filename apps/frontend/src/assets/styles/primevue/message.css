@@ -1,0 +1,212 @@
+.p-message {
+  @reference rounded-md outline outline-1;
+}
+
+.p-message-content {
+  @reference flex items-center px-3 py-2 gap-2 h-full;
+}
+
+.p-message-icon {
+  @reference flex-shrink-0;
+}
+
+.p-message-close-button {
+  @reference flex items-center justify-center flex-shrink-0 ms-auto overflow-hidden relative cursor-pointer select-none
+        w-7 h-7 rounded-full bg-transparent transition-colors duration-200 text-inherit p-0 border-none
+        focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2;
+}
+
+.p-message-info {
+  @reference bg-blue-50/95 outline-blue-200 text-blue-600
+        dark:bg-blue-500/15 dark:outline-blue-700/35 dark:text-blue-500
+        shadow-[0px_4px_8px_0px_theme(colors.blue.500/0.04)];
+}
+
+.p-message-info .p-message-close-button {
+  @reference hover:bg-blue-100 focus-visible:outline-blue-600
+        dark:hover:bg-white/5 dark:focus-visible:outline-blue-500;
+}
+
+.p-message-info.p-message-outlined {
+  @reference text-blue-500 outline-blue-500 dark:text-blue-600 dark:outline-blue-600;
+}
+
+.p-message-info.p-message-simple {
+  @reference text-blue-500 dark:text-blue-600;
+}
+
+.p-message-success {
+  @reference bg-green-50/95 outline-green-200 text-green-600
+        dark:bg-green-500/15 dark:outline-green-700/35 dark:text-green-500
+        shadow-[0px_4px_8px_0px_theme(colors.green.500/0.04)];
+}
+
+.p-message-success .p-message-close-button {
+  @reference hover:bg-green-100 focus-visible:outline-green-600
+        dark:hover:bg-white/5 dark:focus-visible:outline-green-500;
+}
+
+.p-message-success.p-message-outlined {
+  @reference text-green-500 outline-green-500 dark:text-green-600 dark:outline-green-600;
+}
+
+.p-message-success.p-message-simple {
+  @reference text-green-500 dark:text-green-600;
+}
+
+.p-message-warn {
+  @reference bg-yellow-50/95 outline-yellow-200 text-yellow-600
+        dark:bg-yellow-500/15 dark:outline-yellow-700/35 dark:text-yellow-500
+        shadow-[0px_4px_8px_0px_theme(colors.yellow.500/0.04)];
+}
+
+.p-message-warn .p-message-close-button {
+  @reference hover:bg-yellow-100 focus-visible:outline-yellow-600
+        dark:hover:bg-white/5 dark:focus-visible:outline-yellow-500;
+}
+
+.p-message-warn.p-message-outlined {
+  @reference text-yellow-500 outline-yellow-500 dark:text-yellow-600 dark:outline-yellow-600;
+}
+
+.p-message-warn.p-message-simple {
+  @reference text-yellow-500 dark:text-yellow-600;
+}
+
+.p-message-error {
+  @reference bg-red-50/95 outline-red-200 text-red-600
+        dark:bg-red-500/15 dark:outline-red-700/35 dark:text-red-500
+        shadow-[0px_4px_8px_0px_theme(colors.red.500/0.04)];
+}
+
+.p-message-error .p-message-close-button {
+  @reference hover:bg-red-100 focus-visible:outline-red-600
+        dark:hover:bg-white/5 dark:focus-visible:outline-red-500;
+}
+
+.p-message-error.p-message-outlined {
+  @reference text-red-500 outline-red-500 dark:text-red-600 dark:outline-red-600;
+}
+
+.p-message-error.p-message-simple {
+  @reference text-red-500 dark:text-red-600;
+}
+
+.p-message-secondary {
+  @reference bg-surface-100 outline-surface-200 text-surface-600
+        dark:bg-surface-800 dark:outline-surface-700 dark:text-surface-300
+        shadow-[0px_4px_8px_0px_rgba(0,0,0,0.04)];
+}
+
+.p-message-secondary .p-message-close-button {
+  @reference hover:bg-surface-200 focus-visible:outline-surface-600
+        dark:hover:bg-surface-700 dark:focus-visible:outline-surface-300;
+}
+
+.p-message-secondary.p-message-outlined {
+  @reference text-surface-500 outline-surface-500 dark:text-surface-600 dark:outline-surface-600;
+}
+
+.p-message-secondary.p-message-simple {
+  @reference text-surface-500 dark:text-surface-600;
+}
+
+.p-message-contrast {
+  @reference bg-surface-900 outline-surface-950 text-surface-50
+        dark:bg-surface-0 dark:outline-surface-100 dark:text-surface-950
+        shadow-[0px_4px_8px_0px_rgba(0,0,0,0.04)];
+}
+
+.p-message-contrast .p-message-close-button {
+  @reference hover:bg-surface-800 focus-visible:outline-surface-50
+        dark:hover:bg-surface-100 dark:focus-visible:outline-surface-950;
+}
+
+.p-message-contrast.p-message-outlined {
+  @reference text-surface-950 outline-surface-950 dark:text-surface-0 dark:outline-surface-0;
+}
+
+.p-message-contrast.p-message-simple {
+  @reference text-surface-950 dark:text-surface-0;
+}
+
+.p-message-text {
+  @reference text-base font-medium;
+}
+
+.p-message-icon {
+  @reference text-lg w-[1.125rem] h-[1.125rem];
+}
+
+.p-message-enter-from {
+  @reference opacity-0;
+}
+
+.p-message-enter-active {
+  @reference transition-opacity duration-300;
+}
+
+.p-message.p-message-leave-from {
+  @reference max-h-[1000px];
+}
+
+.p-message.p-message-leave-to {
+  @reference max-h-0 opacity-0 m-0;
+}
+
+.p-message-leave-active {
+  @reference overflow-hidden [transition:max-height_0.45s_cubic-bezier(0,1,0,1),opacity_0.3s,margin0.3s];
+}
+
+.p-message-leave-active .p-message-close-button {
+  @reference opacity-0;
+}
+
+.p-message-sm .p-message-content {
+  @reference px-2.5 py-[0.375rem];
+}
+
+.p-message-sm .p-message-text {
+  @reference text-sm;
+}
+
+.p-message-sm .p-message-icon {
+  @reference w-4 h-4 text-sm;
+}
+
+.p-message-sm .p-message-close-icon {
+  @reference w-3.5 h-3.5 text-sm;
+}
+
+.p-message-lg .p-message-content {
+  @reference px-3.5 py-2.5;
+}
+
+.p-message-lg .p-message-text {
+  @reference text-xl;
+}
+
+.p-message-lg .p-message-icon {
+  @reference w-5 h-5 text-xl;
+}
+
+.p-message-lg .p-message-close-icon {
+  @reference w-[1.125rem] h-[1.125rem] text-xl;
+}
+
+.p-message-outlined {
+  @reference bg-transparent outline outline-1;
+}
+
+.p-message-simple {
+  @reference bg-transparent outline-none shadow-none;
+}
+
+.p-message-simple .p-message-content {
+  @reference p-0;
+}
+
+.p-message-outlined .p-message-close-button:hover,
+.p-message-simple .p-message-close-button:hover {
+  @reference bg-transparent;
+}

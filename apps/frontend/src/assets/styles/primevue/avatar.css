@@ -1,0 +1,50 @@
+.p-avatar {
+  @reference inline-flex items-center justify-center
+        w-8 h-8 text-base rounded-md
+        bg-surface-200 dark:bg-surface-700;
+}
+
+.p-avatar-image {
+  @reference bg-transparent;
+}
+
+.p-avatar-circle,
+.p-avatar-circle img {
+  @reference rounded-full;
+}
+
+.p-avatar-icon {
+  @reference text-base;
+}
+
+.p-avatar img {
+  @reference w-full h-full;
+}
+
+.p-avatar-lg {
+  @reference w-12 h-12 text-2xl;
+}
+
+.p-avatar-lg .p-avatar-icon {
+  @reference text-2xl;
+}
+
+.p-avatar-xl {
+  @reference w-16 h-16 text-[2rem];
+}
+
+.p-avatar-xl .p-avatar-icon {
+  @reference text-[2rem];
+}
+
+.p-avatar-group {
+  @reference flex items-center;
+}
+
+.p-avatar-group .p-avatar + .p-avatar {
+  @reference -ms-4;
+}
+
+.p-avatar-group .p-avatar {
+  @reference border-2 border-surface-200 dark:border-surface-700;
+}

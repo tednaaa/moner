@@ -1,50 +1,9 @@
 [workspace.lints.clippy]
-pedantic = "warn"
-nursery = "warn"
+nursery = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
 
-[package]
-name = "moner"
-version = "0.1.0"
-edition = "2021"
-publish = false
-
-[dependencies]
-axum = { version = "0.7.5", features = ["macros"] }
-tokio = { version = "1.37.0", features = ["full"] }
-tower-http = { version = "0.5.2", features = [
-	"trace",
-	"compression-br",
-	"propagate-header",
-	"cors",
-] }
-sqlx = { version = "0.7.4", features = [
-	"runtime-async-std-native-tls",
-	"postgres",
-	"chrono",
-	"uuid",
-] }
-
-dotenvy = "0.15.7"
-lazy_static = "1.4.0"
-async-trait = "0.1.80"
-uuid = { version = "1.8.0", features = ["serde", "v4"] }
-serde_json = "1.0.115"
-serde = { version = "1.0.197", features = ["derive"] }
-chrono = { version = "0.4.37", features = ["serde"] }
-argon2 = "0.5.3"
-rand = "0.8.5"
-
-log = "0.4.21"
-tracing = "0.1.40"
-pretty_env_logger = "0.5.0"
-
-validator = { version = "0.16", features = ["derive"] }
-anyhow = "1.0.81"
-thiserror = "1.0.59"
-
-jsonwebtoken = "9.3.0"
-lettre = "0.11.6"
-mrml = "3.1.5"
-env_logger = "0.11.3"
-oauth2 = "4.4.2"
-tower-cookies = "0.10.0"
+[workspace]
+resolver = "2"
+members = [
+	"apps/server",
+]

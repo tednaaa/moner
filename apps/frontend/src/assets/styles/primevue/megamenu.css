@@ -1,0 +1,219 @@
+.p-megamenu {
+  @reference relative flex items-center rounded-md gap-2
+        bg-surface-0 dark:bg-surface-900
+        text-surface-700 dark:text-surface-0
+        border border-surface-200 dark:border-surface-700;
+}
+
+.p-megamenu-start,
+.p-megamenu-end {
+  @reference flex items-center;
+}
+
+.p-megamenu-root-list {
+  @reference m-0 p-0 list-none outline-none flex items-center flex-wrap gap-2;
+}
+
+.p-megamenu-root-list > .p-megamenu-item > .p-menumegamenubar-item-content {
+  @reference rounded-md;
+}
+
+.p-megamenu-root-list > .p-megamenu-item > .p-megamenu-item-content > .p-megamenu-item-link {
+  @reference px-3 py-2;
+}
+
+.p-megamenu-item-content {
+  @reference transition-colors duration-200 rounded-sm text-surface-700 dark:text-surface-0;
+}
+
+.p-megamenu-item-link {
+  @reference cursor-pointer flex items-center no-underline overflow-hidden relative text-inherit
+        px-3 py-2 gap-2 select-none outline-none;
+}
+
+.p-megamenu-item-icon {
+  @reference text-surface-400 dark:text-surface-500;
+}
+
+.p-megamenu-submenu-icon {
+  @reference text-surface-400 dark:text-surface-500 ms-auto text-sm w-[0.875rem] h-[0.875rem];
+}
+
+.p-megamenu-item.p-focus > .p-megamenu-item-content {
+  @reference bg-surface-100 dark:bg-surface-800 text-surface-800 dark:text-surface-0;
+}
+
+.p-megamenu-item.p-focus > .p-megamenu-item-content .p-megamenu-item-icon {
+  @reference text-surface-500 dark:text-surface-400;
+}
+
+.p-megamenu-item.p-focus > .p-megamenu-item-content .p-megamenu-submenu-icon {
+  @reference text-surface-500 dark:text-surface-400;
+}
+
+.p-megamenu-item:not(.p-disabled) > .p-megamenu-item-content:hover {
+  @reference bg-surface-100 dark:bg-surface-800 text-surface-800 dark:text-surface-0;
+}
+
+.p-megamenu-item:not(.p-disabled) > .p-megamenu-item-content:hover .p-megamenu-item-icon {
+  @reference text-surface-500 dark:text-surface-400;
+}
+
+.p-megamenu-item:not(.p-disabled) > .p-megamenu-item-content:hover .p-megamenu-submenu-icon {
+  @reference text-surface-500 dark:text-surface-400;
+}
+
+.p-megamenu-item-active > .p-megamenu-item-content {
+  @reference bg-surface-100 dark:bg-surface-800 text-surface-800 dark:text-surface-0;
+}
+
+.p-megamenu-item-active > .p-megamenu-item-content .p-megamenu-item-icon {
+  @reference text-surface-500 dark:text-surface-400;
+}
+
+.p-megamenu-item-active > .p-megamenu-item-content .p-megamenu-submenu-icon {
+  @reference text-surface-500 dark:text-surface-400;
+}
+
+.p-megamenu-overlay {
+  @reference hidden absolute w-auto z-10 start-0 min-w-full rounded-md
+        bg-surface-0 dark:bg-surface-900
+        border border-surface-200 dark:border-surface-700
+        text-surface-700 dark:text-surface-0
+        shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)];
+}
+
+.p-megamenu-root-list > .p-megamenu-item-active > .p-megamenu-overlay {
+  @reference block;
+}
+
+.p-megamenu-submenu {
+  @reference m-0 p-1 list-none min-w-52 flex flex-col gap-[2px];
+}
+
+.p-megamenu-submenu-label {
+  @reference px-3 py-2 text-surface-500 dark:text-surface-400 font-semibold bg-transparent;
+}
+
+.p-megamenu-separator {
+  @reference border-t border-surface-200 dark:border-surface-700;
+}
+
+.p-megamenu-horizontal {
+  @reference items-center px-3 py-2;
+}
+
+.p-megamenu-horizontal .p-megamenu-root-list {
+  @reference flex items-center flex-wrap gap-2;
+}
+
+.p-megamenu-horizontal .p-megamenu-end {
+  @reference ms-auto self-center;
+}
+
+.p-megamenu-vertical {
+  @reference inline-flex min-w-52 flex-col items-stretch p-1;
+}
+
+.p-megamenu-vertical .p-megamenu-root-list {
+  @reference items-stretch flex-col gap-[2px];
+}
+
+.p-megamenu-vertical .p-megamenu-root-list > .p-megamenu-item-active > .p-megamenu-overlay {
+  @reference start-full top-0;
+}
+
+.p-megamenu-vertical
+  .p-megamenu-root-list
+  > .p-megamenu-item
+  > .p-megamenu-item-content
+  .p-megamenu-submenu-icon {
+  @reference ms-auto;
+}
+
+.p-megamenu-grid {
+  @reference flex;
+}
+
+.p-megamenu-col-2,
+.p-megamenu-col-3,
+.p-megamenu-col-4,
+.p-megamenu-col-6,
+.p-megamenu-col-12 {
+  @reference flex-grow-0 flex-shrink-0 basis-auto p-2;
+}
+
+.p-megamenu-col-2 {
+  @reference w-1/6;
+}
+
+.p-megamenu-col-3 {
+  @reference w-1/4;
+}
+
+.p-megamenu-col-4 {
+  @reference w-1/3;
+}
+
+.p-megamenu-col-6 {
+  @reference w-1/2;
+}
+
+.p-megamenu-col-12 {
+  @reference w-full;
+}
+
+.p-megamenu-button {
+  @reference hidden justify-center items-center cursor-pointer w-7 h-7 relative border-none rounded-full
+        text-surface-500 dark:text-surface-400 hover:text-surface-600 dark:hover:text-surface-300
+        bg-transparent hover:bg-surface-100 dark:hover:bg-surface-800
+        focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-primary
+        transition-colors duration-200;
+}
+
+.p-megamenu-mobile {
+  @reference flex;
+}
+
+.p-megamenu-mobile .p-megamenu-button {
+  @reference flex;
+}
+
+.p-megamenu-mobile .p-megamenu-root-list {
+  @reference absolute hidden flex-col top-full start-0 z-10 w-full p-1 gap-[2px]
+        bg-surface-0 dark:bg-surface-900
+        border border-surface-200 dark:border-surface-700
+        shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)];
+}
+
+.p-megamenu-mobile-active .p-megamenu-root-list {
+  @reference flex;
+}
+
+.p-megamenu-mobile .p-megamenu-root-list .p-megamenu-item {
+  @reference w-full static;
+}
+
+.p-megamenu-mobile .p-megamenu-overlay {
+  @reference static border-none rounded-none shadow-none;
+}
+
+.p-megamenu-mobile .p-megamenu-grid {
+  @reference flex-wrap overflow-auto max-h-[90%];
+}
+
+.p-megamenu-mobile
+  .p-megamenu-root-list
+  > .p-megamenu-item
+  > .p-megamenu-item-content
+  .p-megamenu-submenu-icon {
+  @reference ms-auto transition-transform duration-[200ms];
+}
+
+.p-megamenu-mobile
+  .p-megamenu-root-list
+  > .p-megamenu-item-active
+  > .p-megamenu-item-content
+  .p-megamenu-submenu-icon {
+  @reference -rotate-180;
+}

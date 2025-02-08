@@ -1,0 +1,64 @@
+.p-accordionpanel {
+  @reference flex flex-col border-b border-surface-200 dark:border-surface-700;
+}
+
+.p-accordionheader {
+  @reference cursor-pointer disabled:cursor-auto flex items-center justify-between p-[1.125rem] font-semibold
+        bg-surface-0 dark:bg-surface-900
+        text-surface-500 dark:text-surface-400
+        transition-colors duration-200;
+}
+
+.p-accordionpanel:first-child > .p-accordionheader {
+  @reference rounded-ss-md rounded-se-md;
+}
+
+.p-accordionpanel:last-child > .p-accordionheader {
+  @reference rounded-ee-md rounded-es-md;
+}
+
+.p-accordionpanel:last-child.p-accordionpanel-active > .p-accordionheader {
+  @reference rounded-ee-md rounded-es-md;
+}
+
+.p-accordionheader-toggle-icon {
+  @reference text-surface-500 dark:text-surface-400;
+}
+
+.p-accordionpanel:not(.p-disabled) .p-accordionheader:focus-visible {
+  @reference outline outline-1 outline-offset-[-1px] outline-primary;
+}
+
+.p-accordionpanel:not(.p-accordionpanel-active):not(.p-disabled) > .p-accordionheader:hover {
+  @reference bg-surface-0 dark:bg-surface-900 text-surface-700 dark:text-surface-0;
+}
+
+.p-accordionpanel:not(.p-accordionpanel-active):not(.p-disabled)
+  .p-accordionheader:hover
+  .p-accordionheader-toggle-icon {
+  @reference text-surface-700 dark:text-surface-0;
+}
+
+.p-accordionpanel:not(.p-disabled).p-accordionpanel-active > .p-accordionheader {
+  @reference bg-surface-0 dark:bg-surface-900 text-surface-700 dark:text-surface-0;
+}
+
+.p-accordionpanel:not(.p-disabled).p-accordionpanel-active
+  > .p-accordionheader
+  .p-accordionheader-toggle-icon {
+  @reference text-surface-700 dark:text-surface-0;
+}
+
+.p-accordionpanel:not(.p-disabled).p-accordionpanel-active > .p-accordionheader:hover {
+  @reference bg-surface-0 dark:bg-surface-900 text-surface-700 dark:text-surface-0;
+}
+
+.p-accordionpanel:not(.p-disabled).p-accordionpanel-active
+  > .p-accordionheader:hover
+  .p-accordionheader-toggle-icon {
+  @reference text-surface-700 dark:text-surface-0;
+}
+
+.p-accordioncontent-content {
+  @reference bg-surface-0 dark:bg-surface-900 text-surface-700 dark:text-surface-0 pt-0 px-[1.125rem] pb-[1.125rem];
+}

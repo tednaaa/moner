@@ -1,0 +1,23 @@
+.p-iconfield {
+  @reference relative;
+}
+
+.p-inputicon {
+  @reference absolute top-1/2 -mt-2 text-surface-400 leading-none;
+}
+
+.p-iconfield .p-inputicon:first-child {
+  @reference start-3;
+}
+
+.p-iconfield .p-inputicon:last-child {
+  @reference end-3;
+}
+
+.p-iconfield .p-inputtext:not(:first-child) {
+  @reference ps-10;
+}
+
+.p-iconfield .p-inputtext:not(:last-child) {
+  @reference pe-10;
+}

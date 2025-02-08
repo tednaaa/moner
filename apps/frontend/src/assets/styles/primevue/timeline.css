@@ -1,0 +1,121 @@
+.p-timeline {
+  @reference flex flex-col flex-grow;
+}
+
+.p-timeline-left .p-timeline-event-opposite {
+  @reference text-end;
+}
+
+.p-timeline-left .p-timeline-event-content {
+  @reference text-start;
+}
+
+.p-timeline-right .p-timeline-event {
+  @reference flex-row-reverse;
+}
+
+.p-timeline-right .p-timeline-event-opposite {
+  @reference text-start;
+}
+
+.p-timeline-right .p-timeline-event-content {
+  @reference text-end;
+}
+
+.p-timeline-vertical.p-timeline-alternate .p-timeline-event:nth-child(even) {
+  @reference flex-row-reverse;
+}
+
+.p-timeline-vertical.p-timeline-alternate
+  .p-timeline-event:nth-child(odd)
+  .p-timeline-event-opposite {
+  @reference text-end;
+}
+
+.p-timeline-vertical.p-timeline-alternate
+  .p-timeline-event:nth-child(odd)
+  .p-timeline-event-content {
+  @reference text-start;
+}
+
+.p-timeline-vertical.p-timeline-alternate
+  .p-timeline-event:nth-child(even)
+  .p-timeline-event-opposite {
+  @reference text-start;
+}
+
+.p-timeline-vertical.p-timeline-alternate
+  .p-timeline-event:nth-child(even)
+  .p-timeline-event-content {
+  @reference text-end;
+}
+
+.p-timeline-vertical .p-timeline-event-opposite,
+.p-timeline-vertical .p-timeline-event-content {
+  @reference py-0 px-4 leading-none;
+}
+
+.p-timeline-vertical .p-timeline-event-connector {
+  @reference w-[2px];
+}
+
+.p-timeline-event {
+  @reference flex relative min-h-20 last:min-h-0;
+}
+
+.p-timeline-event-opposite {
+  @reference flex-1;
+}
+
+.p-timeline-event-content {
+  @reference flex-1;
+}
+
+.p-timeline-event-separator {
+  @reference flex-none flex flex-col items-center;
+}
+
+.p-timeline-event-marker {
+  @reference inline-flex items-center justify-center relative self-baseline
+        border-2 rounded-full border-surface-200 dark:border-surface-700 w-[1.125rem] h-[1.125rem]
+        bg-surface-0 dark:bg-surface-900
+        before:rounded-full before:w-[0.375rem] before:h-[0.375rem] before:bg-primary
+        after:absolute after:w-full after:h-full after:rounded-full after:shadow-[0px_0.5px_0px_0px_rgba(0,0,0,0.06),0px_1px_1px_0px_rgba(0,0,0,0.12)];
+}
+
+.p-timeline-event-connector {
+  @reference flex-grow bg-surface-200 dark:bg-surface-700;
+}
+
+.p-timeline-horizontal {
+  @reference flex-row;
+}
+
+.p-timeline-horizontal .p-timeline-event {
+  @reference flex-col flex-1;
+}
+
+.p-timeline-horizontal .p-timeline-event:last-child {
+  @reference flex-none;
+}
+
+.p-timeline-horizontal .p-timeline-event-separator {
+  @reference flex-row;
+}
+
+.p-timeline-horizontal .p-timeline-event-connector {
+  @reference w-full h-[2px];
+}
+
+.p-timeline-horizontal .p-timeline-event-opposite,
+.p-timeline-horizontal .p-timeline-event-content {
+  @reference py-4 px-0;
+}
+
+.p-timeline-horizontal.p-timeline-alternate .p-timeline-event:nth-child(even) {
+  @reference flex-col-reverse;
+}
+
+.p-timeline-bottom .p-timeline-event {
+  @reference flex-col-reverse;
+}

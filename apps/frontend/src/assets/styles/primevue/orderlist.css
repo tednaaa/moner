@@ -1,0 +1,10 @@
+@import './button';
+@import './listbox';
+
+.p-orderlist {
+  @reference flex gap-[1.125rem];
+}
+
+.p-orderlist-controls {
+  @reference flex flex-col justify-center gap-2;
+}
