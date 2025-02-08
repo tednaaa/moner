@@ -10,6 +10,7 @@ pub struct SkillsRepository {
 	pub(crate) database: Arc<Database>,
 }
 
+#[allow(dead_code)]
 impl SkillsRepository {
 	pub fn new(database: &Arc<Database>) -> Self {
 		Self {
@@ -17,8 +18,6 @@ impl SkillsRepository {
 		}
 	}
 
-	// TODO: Use inside admin panel
-	#[allow(dead_code)]
 	pub async fn create(&self, name: &str) -> anyhow::Result<Skill> {
 		let skill = sqlx::query_as!(Skill, "INSERT INTO skills (name) VALUES ($1) RETURNING *", name)
 			.fetch_one(&*self.database.pool)
@@ -28,8 +27,6 @@ impl SkillsRepository {
 		Ok(skill)
 	}
 
-	// TODO: Use inside admin panel
-	#[allow(dead_code)]
 	pub async fn list(&self) -> anyhow::Result<Vec<Skill>> {
 		let skills = sqlx::query_as!(Skill, "SELECT * FROM skills")
 			.fetch_all(&*self.database.pool)
