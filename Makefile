@@ -1,7 +1,7 @@
 DOCKER_COMPOSE_PATH = infra/docker-compose.yml
 
-watch:
-	@cargo watch -q -c -w src/ -x run
+dev:
+	bacon apps/server
 
 lint:
 	@cargo clippy

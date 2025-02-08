@@ -39,12 +39,6 @@ impl Settings {
 
 			auth: Auth {
 				jwt_secret: get_env("JWT_SECRET"),
-				google_client_id: get_env("GOOGLE_CLIENT_ID"),
-				google_client_secret: get_env("GOOGLE_CLIENT_SECRET"),
-				discord_client_id: get_env("DISCORD_CLIENT_ID"),
-				discord_client_secret: get_env("DISCORD_CLIENT_SECRET"),
-				github_client_id: get_env("GITHUB_CLIENT_ID"),
-				github_client_secret: get_env("GITHUB_CLIENT_SECRET"),
 			},
 		}
 	}
