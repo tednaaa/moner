@@ -14,6 +14,7 @@ pub struct UsersRepostory {
 	pub(crate) database: Arc<Database>,
 }
 
+#[allow(dead_code)]
 impl UsersRepostory {
 	pub fn new(database: &Arc<Database>) -> Self {
 		Self {

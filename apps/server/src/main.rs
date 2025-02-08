@@ -8,7 +8,6 @@ mod settings;
 mod validation;
 
 mod experience;
-mod follows;
 mod skills;
 mod users;
 

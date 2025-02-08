@@ -7,6 +7,7 @@ lazy_static! {
 
 #[derive(Debug, Clone)]
 pub struct Settings {
+	#[allow(dead_code)] // actually used in logging
 	pub rust_log: String,
 	pub database_url: String,
 	pub website_url: String,
@@ -59,12 +60,6 @@ pub struct Smtp {
 #[derive(Debug, Clone)]
 pub struct Auth {
 	pub jwt_secret: String,
-	pub google_client_id: String,
-	pub google_client_secret: String,
-	pub discord_client_id: String,
-	pub discord_client_secret: String,
-	pub github_client_id: String,
-	pub github_client_secret: String,
 }
 
 fn get_env<T: std::str::FromStr>(key: &str) -> T {

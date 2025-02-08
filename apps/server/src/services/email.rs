@@ -15,6 +15,7 @@ pub struct EmailService {
 
 const SMTP_RELAY: &str = "smtp.gmail.com";
 
+#[allow(dead_code)]
 impl EmailService {
 	pub fn new() -> Self {
 		let credentials = Credentials::new(SETTINGS.smtp.username.to_string(), SETTINGS.smtp.password.to_string());

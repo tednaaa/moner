@@ -38,10 +38,10 @@ impl ExperienceState {
 pub fn init() -> Router<ExperienceState> {
 	Router::new()
 		.route("/experience", post(create_experience_route))
-		.route("/experience/:experience_id", put(update_experience_route))
-		.route("/experience/:experience_id", delete(delete_experience_route))
+		.route("/experience/{experience_id}", put(update_experience_route))
+		.route("/experience/{experience_id}", delete(delete_experience_route))
 		.route_layer(middleware::from_fn(auth::middleware))
-		.route("/:user_id/experience", get(user_experiences_route))
+		.route("/{user_id}/experience", get(user_experiences_route))
 }
 
 async fn create_experience_route(
@@ -118,10 +118,7 @@ pub enum ExperienceApiError {
 impl IntoResponse for ExperienceApiError {
 	fn into_response(self) -> Response {
 		let status_code = match self {
-			ExperienceApiError::GetUser() => StatusCode::INTERNAL_SERVER_ERROR,
-			ExperienceApiError::Create() => StatusCode::INTERNAL_SERVER_ERROR,
-			ExperienceApiError::Update() => StatusCode::INTERNAL_SERVER_ERROR,
-			ExperienceApiError::Delete() => StatusCode::INTERNAL_SERVER_ERROR,
+			Self::GetUser() | Self::Create() | Self::Update() | Self::Delete() => StatusCode::INTERNAL_SERVER_ERROR,
 		};
 
 		log::error!("{self:?}");

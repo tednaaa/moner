@@ -2,9 +2,6 @@ use anyhow::{anyhow, Error, Result};
 use axum::{extract::Request, http::StatusCode, middleware::Next, response::Response};
 use chrono::{Duration, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, TokenData, Validation};
-use oauth2::{
-	basic::BasicClient, AuthUrl, ClientId, ClientSecret, CsrfToken, PkceCodeChallenge, RedirectUrl, Scope, TokenUrl,
-};
 use serde::{Deserialize, Serialize};
 use tower_cookies::{Cookie, Cookies};
 
@@ -20,9 +17,9 @@ pub struct CurrentUser {
 }
 
 impl CurrentUser {
-	pub fn new(user_id: &i64, email: &str, username: &str) -> Self {
+	pub fn new(user_id: i64, email: &str, username: &str) -> Self {
 		Self {
-			user_id: *user_id,
+			user_id,
 			email: email.to_string(),
 			username: username.to_string(),
 		}
@@ -42,8 +39,7 @@ impl From<User> for CurrentUser {
 pub async fn middleware(cookies: Cookies, mut request: Request, next: Next) -> Result<Response, StatusCode> {
 	let access_token = cookies
 		.get("access_token")
-		.map(|cookie| cookie.value().to_string())
-		.unwrap_or_else(|| String::from(""));
+		.map_or_else(String::new, |cookie| cookie.value().to_string());
 
 	if let Ok(payload) = verify_jwt(&access_token) {
 		request.extensions_mut().insert(payload.claims.user);
@@ -60,8 +56,8 @@ pub struct Claims {
 	pub user: CurrentUser,
 }
 
-pub fn authorize_jwt(cookies: Cookies, user: CurrentUser) -> Result<()> {
-	let access_token = create_jwt(&user.user_id, &user.email, &user.username)
+pub fn authorize_jwt(cookies: &Cookies, user: &CurrentUser) -> Result<()> {
+	let access_token = create_jwt(user.user_id, &user.email, &user.username)
 		.map_err(|error| anyhow!(error).context("Failed to create JWT"))?;
 
 	let access_token_cookie = Cookie::build(("access_token", access_token))
@@ -69,13 +65,13 @@ pub fn authorize_jwt(cookies: Cookies, user: CurrentUser) -> Result<()> {
 		.http_only(true)
 		.build();
 
-	println!("{:#?}", access_token_cookie);
+	println!("{access_token_cookie:#?}");
 
 	cookies.add(access_token_cookie);
 	Ok(())
 }
 
-fn create_jwt(user_id: &i64, email: &str, username: &str) -> Result<String, Error> {
+fn create_jwt(user_id: i64, email: &str, username: &str) -> Result<String, Error> {
 	let now = Utc::now().timestamp();
 	let claims = Claims {
 		exp: now + Duration::hours(12).num_seconds(),

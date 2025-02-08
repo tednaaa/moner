@@ -19,27 +19,20 @@ pub struct PublicUserResponse {
 	pub id: i64,
 	pub email: String,
 	pub username: String,
-	pub is_following: bool,
-	pub followers_count: i64,
-	pub following_count: i64,
 }
 
 impl PublicUserResponse {
-	pub fn from_user(user: User, is_following: bool, followers_count: i64, following_count: i64) -> Self {
+	pub fn from_user(user: User) -> Self {
 		Self {
 			id: user.id,
 			email: user.email,
 			username: user.username,
-			is_following,
-			followers_count,
-			following_count,
 		}
 	}
 }
 
 #[derive(Debug, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
-
 pub struct CreateUserRequest {
 	#[validate(email(message = "Must be a valid email address"))]
 	pub email: String,
@@ -51,12 +44,14 @@ pub struct CreateUserRequest {
 
 #[derive(Debug, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
+#[allow(dead_code)]
 pub struct VerifyUserRequest {
 	pub user_id: i64,
 	#[validate(length(min = 6, max = 6, message = "Code must be 6 characters"))]
 	pub code: String,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct ResendVerificationRequest {

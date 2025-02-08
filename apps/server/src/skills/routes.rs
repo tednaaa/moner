@@ -41,7 +41,7 @@ pub fn init() -> Router<SkillsState> {
 		.route("/skills", post(update_user_skills_route))
 		.route("/skills/suggestions", get(get_suggestions))
 		.route_layer(middleware::from_fn(auth::middleware))
-		.route("/skills/:user_id", get(get_user_skills_route))
+		.route("/skills/{user_id}", get(get_user_skills_route))
 }
 
 async fn get_suggestions(State(state): State<SkillsState>) -> ApiResult<Json<Vec<Skill>>> {
@@ -97,9 +97,8 @@ pub enum SkillsApiError {
 impl IntoResponse for SkillsApiError {
 	fn into_response(self) -> Response {
 		let status_code = match self {
-			SkillsApiError::GetUserSkills() => StatusCode::INTERNAL_SERVER_ERROR,
-			SkillsApiError::UpdateUserSkills() => StatusCode::BAD_REQUEST,
-			SkillsApiError::GetSuggestions() => StatusCode::INTERNAL_SERVER_ERROR,
+			Self::GetUserSkills() | Self::GetSuggestions() => StatusCode::INTERNAL_SERVER_ERROR,
+			Self::UpdateUserSkills() => StatusCode::BAD_REQUEST,
 		};
 
 		log::error!("{self:?}");

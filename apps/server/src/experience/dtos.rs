@@ -23,15 +23,17 @@ pub struct ExperienceDto {
 }
 
 fn validate_location_type(location_type: &str) -> Result<(), ValidationError> {
-	match ["on-site", "remote", "hybrid"].contains(&location_type) {
-		true => Ok(()),
-		false => Err(ValidationError::new("Wrong location type")),
+	if ["on-site", "remote", "hybrid"].contains(&location_type) {
+		Ok(())
+	} else {
+		Err(ValidationError::new("Wrong location type"))
 	}
 }
 
 fn validate_employment_type(employment_type: &str) -> Result<(), ValidationError> {
-	match ["full-time", "part-time", "contract", "freelance", "internship"].contains(&employment_type) {
-		true => Ok(()),
-		false => Err(ValidationError::new("Wrong employment type")),
+	if ["full-time", "part-time", "contract", "freelance", "internship"].contains(&employment_type) {
+		Ok(())
+	} else {
+		Err(ValidationError::new("Wrong employment type"))
 	}
 }
