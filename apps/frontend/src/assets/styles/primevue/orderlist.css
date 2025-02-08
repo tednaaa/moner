@@ -2,9 +2,9 @@
 @import './listbox';
 
 .p-orderlist {
-    @apply flex gap-[1.125rem]
+  @reference flex gap-[1.125rem];
 }
 
 .p-orderlist-controls {
-    @apply flex flex-col justify-center gap-2
+  @reference flex flex-col justify-center gap-2;
 }

@@ -1,3 +1,0 @@
-{
-  plugins: [require('tailwindcss-primeui')]
-}

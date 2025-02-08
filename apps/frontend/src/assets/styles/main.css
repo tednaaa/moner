@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import './primevue/tailwind.css';
+@plugin "tailwindcss-primeui";
 
 /* Primary and Surface Palettes */
 :root {
